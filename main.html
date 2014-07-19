@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--
+    A tetris implementation.
+    Version: 2014-06-18.
+    Author: An-Li Alt Ting.
+    Coding Style:
+        Indentation Style:
+            Always indent with 4 space characters instead of 1 tab
+character.
+        Else:
+            Always prevent a line from exceeding 72 characters.
+            Prevent from using space characters as possible.
+-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Tetris</title>
+        <script src="./tetris.js"></script>
+    </head>
+    <body onkeydown="onkeydown_body(event);"
+        onkeyup="onkeyup_body(event);">
+        <div id="div_game" style="
+            position:fixed;
+            background-color:darkgray;
+            top:50%;
+            left:50%;
+            margin-top:-240px;
+            margin-left:-320px;
+            width:640px;
+            height:480px;
+            ">
+            <div
+                id="div_boardhold"
+                style="
+                position:absolute;
+                left:80px;
+                top:80px;
+            ">
+            </div>
+            <div
+                id="div_board"
+                style="
+                position:absolute;
+                left:160px;
+                top:80px;
+            ">
+            </div>
+            <div
+                id="div_boardnext"
+                style="
+                position:absolute;
+                left:400px;
+                top:80px;
+            ">
+            </div>
+            <div id="div_gamestatus" style="
+                position:relative;
+                top:160px;
+                left:400px;
+            ">
+            </div>
+        </div>
+        <script>
+var board=new Board();
+var board_hold=new BoardHold();
+var board_next=new BoardNext();
+var queue_prototype_tetrominoes=new QueuePrototypeTetromino();
+var tetromino=new Tetromino(
+    queue_prototype_tetrominoes.access(0)
+);
+var status_game=new Status();
+var stdout='';
+queue_prototype_tetrominoes.pop();
+board.build_html();
+board.update_html();
+board_hold.build_html();
+board_hold.update_html();
+board_next.build_html();
+board_next.update_html();
+tetromino.build_html();
+tetromino.update_html();
+tetromino.set_autofall();
+var keys={},times_key={};
+var timeout_keyevents;
+var onkeydown_body=function(event){
+    keys[event.which]=true;
+    times_key[event.which]=0;
+}
+var onkeyup_body=function(event){
+    delete keys[event.which];
+}
+var keyevents=function(){
+    timeout_keyevents=setTimeout(function(){keyevents();},50);
+    if(keys[32]){    // space: hard drop
+            if(times_key[32]%4==0)
+                tetromino.harddrop();
+    }
+    if(keys[37]){    // left arrow
+        if(times_key[37]%2==0)
+            tetromino.transfer(-1,0,0);
+    }
+    if(keys[38]){    // up arrow: 順時鐘轉
+        if(times_key[38]%4==0)
+            tetromino.rotate(1);
+    }
+    if(keys[39]){    // right arrow
+        if(times_key[39]%2==0)
+            tetromino.transfer(1,0,0);
+    }
+    if(keys[40]){    // down arrow: soft drop
+        if(times_key[40]%2==0)
+            tetromino.softdrop();
+    }
+    if(keys[67]){    // c: hold
+        if(times_key[67]%4==0)
+            board_hold.hold();
+        board_hold.update_html();
+    }
+    if(keys[88]){    // x: 順時鐘轉
+        if(times_key[88]%4==0)
+            tetromino.rotate(1);
+    }
+    if(keys[90]){    // z: 逆時鐘轉
+        if(times_key[90]%4==0)
+            tetromino.rotate(0);
+    }
+    for(var i=0;i<128;i++)
+        if(keys[i])
+            times_key[i]++;
+    tetromino.update_html();
+    status_game.update_html();
+}
+keyevents();
+        </script>
+    </body>
+</html>
