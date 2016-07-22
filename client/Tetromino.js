@@ -170,8 +170,8 @@ Tetromino.prototype.update_html=function(){
     div_shadow.style.top=''+(17*(
         this.board.count_rows_visible-(y_shadow+this.prototype.size)
     ))+'px';
-    for(var i=0;i<this.prototype.size;i++)
-        for(var j=0;j<this.prototype.size;j++)
+    for(let i=0;i<this.prototype.size;i++)
+        for(let j=0;j<this.prototype.size;j++)
             output+='<div \
                     style="\
                     width:16px;\
