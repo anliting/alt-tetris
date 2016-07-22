@@ -4,42 +4,20 @@ let npm={
 module.debug=true
 module=module.share({npm})
 Promise.all([
-    module.shareImport('arrange_random.js'),
+    module.shareImport('Status.js'),
     module.shareImport('Board.js'),
     module.shareImport('BoardHold.js'),
     module.shareImport('BoardNext.js'),
-    module.shareImport('prototype_tetrominoes.js'),
-    npm.events(),
-    module.shareImport('QueuePrototypeTetromino.js'),
     module.shareImport('Tetromino.js'),
+    module.shareImport('QueuePrototypeTetromino.js'),
 ]).then(modules=>{
 let
-    arrange_random=modules[0],
+    Status=modules[0],
     Board=modules[1],
     BoardHold=modules[2],
     BoardNext=modules[3],
-    prototype_tetrominoes=modules[4],
-    EventEmitter=modules[5],
-    QueuePrototypeTetromino=modules[6],
-    Tetromino=modules[7]
-function Status(){
-    this.update_html=function(){
-        document.getElementById('div_gamestatus').innerHTML=
-'           Tetromino Type: '+tetromino.prototype.name+'<br>\
-            '+stdout+'<br>\
-';
-    }
-}
-// main.js
-//module.debug=true
-//module.shareImport('tetris.js').then(tetris=>{
-/*let
-    Board=                      tetris.Board,
-    BoardHold=                  tetris.BoardHold,
-    BoardNext=                  tetris.BoardNext,
-    QueuePrototypeTetromino=    tetris.QueuePrototypeTetromino,
-    Tetromino=                  tetris.Tetromino,
-    Status=                     tetris.Status*/
+    Tetromino=modules[4],
+    QueuePrototypeTetromino=modules[5]
 var
     queue_prototype_tetrominoes=new QueuePrototypeTetromino,
     board=new Board,
@@ -50,7 +28,7 @@ var
     ),
     board_hold=new BoardHold(tetromino),
     board_next=new BoardNext(tetromino,queue_prototype_tetrominoes),
-    status_game=new Status,
+    status_game=new Status(tetromino,()=>stdout),
     stdout=''
 queue_prototype_tetrominoes.pop()
 board.build_html()
@@ -79,38 +57,38 @@ var onkeyup_body=function(event){
 var keyevents=function(){
     timeout_keyevents=setTimeout(()=>{
         keyevents()
-    },50)
+    },25)
     if(keys[32]){    // space: hard drop
-        if(times_key[32]%4==0)
+        if(times_key[32]%8==0)
             tetromino.harddrop()
     }
     if(keys[37]){    // left arrow
-        if(times_key[37]%2==0)
+        if(times_key[37]%4==0)
             tetromino.transfer(-1,0,0)
     }
     if(keys[38]){    // up arrow: 順時鐘轉
-        if(times_key[38]%4==0)
+        if(times_key[38]%8==0)
             tetromino.rotate(1)
     }
     if(keys[39]){    // right arrow
-        if(times_key[39]%2==0)
+        if(times_key[39]%4==0)
             tetromino.transfer(1,0,0)
     }
     if(keys[40]){    // down arrow: soft drop
-        if(times_key[40]%2==0)
+        if(times_key[40]%4==0)
             tetromino.softdrop()
     }
     if(keys[67]){    // c: hold
-        if(times_key[67]%4==0)
+        if(times_key[67]%8==0)
             board_hold.hold()
         board_hold.update_html()
     }
     if(keys[88]){    // x: 順時鐘轉
-        if(times_key[88]%4==0)
+        if(times_key[88]%8==0)
             tetromino.rotate(1)
     }
     if(keys[90]){    // z: 逆時鐘轉
-        if(times_key[90]%4==0)
+        if(times_key[90]%8==0)
             tetromino.rotate(0)
     }
     for(let i=0;i<128;i++)
@@ -119,8 +97,7 @@ var keyevents=function(){
     tetromino.update_html()
     status_game.update_html()
 }
-keyevents();
+keyevents()
 document.body.onkeydown=onkeydown_body
 document.body.onkeyup=onkeyup_body
-//})
 })
