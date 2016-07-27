@@ -1,11 +1,20 @@
 module.import('Tetris.js').then(Tetris=>{
     let
         tetris,
-        mainDiv=document.getElementById('div_game'),
+        mainDiv=document.createElement('div'),
         boardDiv=document.createElement('div'),
         holdDiv=document.createElement('div'),
         nextDiv=document.createElement('div'),
         statusDiv=document.createElement('div')
+    mainDiv.id='div_game'
+    mainDiv.style.position='fixed'
+    mainDiv.style.backgroundColor='darkgray'
+    mainDiv.style.top='50%'
+    mainDiv.style.left='50%'
+    mainDiv.style.marginTop='-240px'
+    mainDiv.style.marginLeft='-320px'
+    mainDiv.style.width='640px'
+    mainDiv.style.height='480px'
     boardDiv.id='div_board'
     boardDiv.style.position='absolute'
     boardDiv.style.left='160px'
@@ -26,5 +35,6 @@ module.import('Tetris.js').then(Tetris=>{
     mainDiv.appendChild(holdDiv)
     mainDiv.appendChild(nextDiv)
     mainDiv.appendChild(statusDiv)
+    document.body.appendChild(mainDiv)
     tetris=new Tetris
 })
