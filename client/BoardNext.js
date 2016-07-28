@@ -27,6 +27,15 @@ BoardNext.prototype.update_html=function(){
     }
     div_boardnext.innerHTML=output;
 }
+Object.defineProperty(BoardNext.prototype,'view',{get(){
+    let
+        div=document.createElement('div')
+    div.id='div_boardnext'
+    div.style.position='absolute'
+    div.style.left='400px'
+    div.style.top='80px'
+    return div
+}})
 function BoardNext(tetromino,queue_prototype_tetrominoes){
     this.tetromino=tetromino
     this.queue_prototype_tetrominoes=queue_prototype_tetrominoes

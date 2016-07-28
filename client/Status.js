@@ -8,4 +8,13 @@ Status.prototype.update_html=function(){
         '+this.stdout()+'<br>\
 ';
 }
+Object.defineProperty(Status.prototype,'view',{get(){
+    let
+        div=document.createElement('div')
+    div.id='div_gamestatus'
+    div.style.position='relative'
+    div.style.left='400px'
+    div.style.top='160px'
+    return div
+}})
 module.export=Status

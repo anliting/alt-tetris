@@ -66,6 +66,7 @@ Tetromino.prototype.rotate=function(mode){
             ][i].y,
             dd
         )==0){
+            // bug: stdout should be tetris._stdout
             if(this.prototype==prototype_tetrominoes[5]&&i)
                 stdout=this.prototype.name+'-Spin<br>'+stdout
             return i

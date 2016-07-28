@@ -21,5 +21,14 @@ Board.prototype.update_html=modules[0]
 Board.prototype.build_html=modules[1]
 Board.prototype.update=modules[2]
 Board.prototype.insert=modules[3]
+Object.defineProperty(Board.prototype,'view',{get(){
+    let
+        boardDiv=document.createElement('div')
+    boardDiv.id='div_board'
+    boardDiv.style.position='absolute'
+    boardDiv.style.left='160px'
+    boardDiv.style.top='80px'
+    return boardDiv
+}})
 module.export=Board
 })

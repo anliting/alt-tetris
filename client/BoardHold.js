@@ -41,4 +41,12 @@ BoardHold.prototype.update_html=function(){
     }
     div_boardhold.innerHTML=output
 }
+Object.defineProperty(BoardHold.prototype,'view',{get(){
+    let div=document.createElement('div')
+    div.id='div_boardhold'
+    div.style.position='absolute'
+    div.style.left='80px'
+    div.style.top='80px'
+    return div
+}})
 module.export=BoardHold
