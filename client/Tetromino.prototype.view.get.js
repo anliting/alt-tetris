@@ -1,18 +1,19 @@
 module.export=function(){
     let
-        div_board=document.getElementById('div_board')
-    div_board.appendChild(createShadowDiv(
+        div=document.createElement('div')
+    div.appendChild(createShadowDiv(
         17*this.x,
         17*(
             this.board.count_rows-(this.y+this.prototype.size)
         )
     ))
-    div_board.appendChild(createTetrisDiv(
+    div.appendChild(createTetrisDiv(
         17*this.x,
         17*(
             this.board.count_rows-(this.y+this.prototype.size)
         )
     ))
+    return div
 }
 function createShadowDiv(left,top){
     let div=document.createElement('div')

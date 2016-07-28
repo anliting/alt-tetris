@@ -40,7 +40,6 @@ Tetris.prototype.listenToKeys=modules[6]
 Object.defineProperty(Tetris.prototype,'view',{get(){
     let
         div=document.createElement('div')
-    div.id='div_game'
     div.style.width='640px'
     div.style.height='480px'
     div.appendChild(this._board.view)
@@ -48,15 +47,13 @@ Object.defineProperty(Tetris.prototype,'view',{get(){
     div.appendChild(this._board_next.view)
     div.appendChild(this._status_game.view)
     this._queue_prototype_tetrominoes.pop()
+    this._board.update_html()
+    this._board_hold.update_html()
+    this._board_next.update_html()
     return div
 }})
 Tetris.prototype.setup=function(){
-    this._board.update_html()
-    this._board_hold.build_html()
-    this._board_hold.update_html()
-    this._board_next.build_html()
-    this._board_next.update_html()
-    this._tetromino.build_html()
+    document.getElementById('div_board').appendChild(this._tetromino.view)
     this._tetromino.update_html()
     this._tetromino.set_autofall()
     this._queue_prototype_tetrominoes.on('pop',ev=>{

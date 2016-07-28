@@ -28,6 +28,7 @@ Object.defineProperty(Board.prototype,'view',{get(){
     let
         div=document.createElement('div'),
         backCellsDiv=createBackCellsDiv()
+    // to-do: remove id
     div.id='div_board'
     div.style.position='absolute'
     div.style.left='160px'

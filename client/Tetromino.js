@@ -1,7 +1,7 @@
 Promise.all([
     module.shareImport('prototype_tetrominoes.js'),
     module.shareImport('Tetromino.prototype.update_html.js'),
-    module.shareImport('Tetromino.prototype.build_html.js'),
+    module.shareImport('Tetromino.prototype.view.get.js'),
 ]).then(modules=>{
 let
     prototype_tetrominoes=modules[0]
@@ -91,7 +91,7 @@ Tetromino.prototype.harddrop=function(){
     this.drop()
 }
 Tetromino.prototype.update_html=modules[1]
-Tetromino.prototype.build_html=modules[2]
+Object.defineProperty(Tetromino.prototype,'view',{get:modules[2]})
 Tetromino.prototype.autofall=function(){
     this.set_autofall()
     if(this.transfer(0,-1,0))
