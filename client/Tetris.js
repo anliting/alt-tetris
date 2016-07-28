@@ -10,6 +10,7 @@ Promise.all([
     module.shareImport('BoardNext.js'),
     module.shareImport('Tetromino.js'),
     module.shareImport('QueuePrototypeTetromino.js'),
+    module.shareImport('Tetris.prototype.listenToKeys.js'),
 ]).then(modules=>{
 let
     Status=modules[0],
@@ -20,6 +21,9 @@ let
     QueuePrototypeTetromino=modules[5]
 module.export=Tetris
 function Tetris(){
+}
+Tetris.prototype.listenToKeys=modules[6]
+Object.defineProperty(Tetris.prototype,'view',{get(){
     let
         mainDiv=document.createElement('div'),
         boardDiv=document.createElement('div'),
@@ -27,12 +31,6 @@ function Tetris(){
         nextDiv=document.createElement('div'),
         statusDiv=document.createElement('div')
     mainDiv.id='div_game'
-    mainDiv.style.position='fixed'
-    mainDiv.style.backgroundColor='darkgray'
-    mainDiv.style.top='50%'
-    mainDiv.style.left='50%'
-    mainDiv.style.marginTop='-240px'
-    mainDiv.style.marginLeft='-320px'
     mainDiv.style.width='640px'
     mainDiv.style.height='480px'
     boardDiv.id='div_board'
@@ -55,7 +53,9 @@ function Tetris(){
     mainDiv.appendChild(holdDiv)
     mainDiv.appendChild(nextDiv)
     mainDiv.appendChild(statusDiv)
-    document.body.appendChild(mainDiv)
+    return mainDiv
+}})
+Tetris.prototype.setup=function(){
     let
         queue_prototype_tetrominoes=new QueuePrototypeTetromino,
         board=new Board,
@@ -68,6 +68,10 @@ function Tetris(){
         board_next=new BoardNext(tetromino,queue_prototype_tetrominoes),
         status_game=new Status(tetromino,()=>stdout),
         stdout=''
+    this.tetromino=tetromino
+    this.status_game=status_game
+    this.board_hold=board_hold
+    this.board_next=board_next
     queue_prototype_tetrominoes.pop()
     board.build_html()
     board.update_html()
@@ -83,60 +87,6 @@ function Tetris(){
             board_next.update_html()
         })
     })
-    var keys={},times_key={}
-    var timeout_keyevents
-    var onkeydown_body=function(event){
-        keys[event.which]=true
-        times_key[event.which]=0
-    }
-    var onkeyup_body=function(event){
-        delete keys[event.which]
-    }
-    var keyevents=function(){
-        timeout_keyevents=setTimeout(()=>{
-            keyevents()
-        },25)
-        if(keys[32]){    // space: hard drop
-            if(times_key[32]%8==0)
-                tetromino.harddrop()
-        }
-        if(keys[37]){    // left arrow
-            if(times_key[37]%4==0)
-                tetromino.transfer(-1,0,0)
-        }
-        if(keys[38]){    // up arrow: 順時鐘轉
-            if(times_key[38]%8==0)
-                tetromino.rotate(1)
-        }
-        if(keys[39]){    // right arrow
-            if(times_key[39]%4==0)
-                tetromino.transfer(1,0,0)
-        }
-        if(keys[40]){    // down arrow: soft drop
-            if(times_key[40]%4==0)
-                tetromino.softdrop()
-        }
-        if(keys[67]){    // c: hold
-            if(times_key[67]%8==0)
-                board_hold.hold()
-            board_hold.update_html()
-        }
-        if(keys[88]){    // x: 順時鐘轉
-            if(times_key[88]%8==0)
-                tetromino.rotate(1)
-        }
-        if(keys[90]){    // z: 逆時鐘轉
-            if(times_key[90]%8==0)
-                tetromino.rotate(0)
-        }
-        for(let i=0;i<128;i++)
-            if(keys[i])
-                times_key[i]++
-        tetromino.update_html()
-        status_game.update_html()
-    }
-    keyevents()
-    document.body.onkeydown=onkeydown_body
-    document.body.onkeyup=onkeyup_body
+    this.listenToKeys()
 }
 })
