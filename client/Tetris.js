@@ -30,7 +30,10 @@ function Tetris(){
         this._board
     )
     this._board_hold=new BoardHold(this._tetromino)
-    this._board_next=new BoardNext(this._tetromino,this._queue_prototype_tetrominoes)
+    this._board_next=new BoardNext(
+        this._tetromino,
+        this._queue_prototype_tetrominoes
+    )
     this._status_game=new Status(this._tetromino,()=>this._stdout)
 }
 Tetris.prototype.listenToKeys=modules[6]
@@ -44,11 +47,10 @@ Object.defineProperty(Tetris.prototype,'view',{get(){
     div.appendChild(this._board_hold.view)
     div.appendChild(this._board_next.view)
     div.appendChild(this._status_game.view)
+    this._queue_prototype_tetrominoes.pop()
     return div
 }})
 Tetris.prototype.setup=function(){
-    this._queue_prototype_tetrominoes.pop()
-    this._board.build_html()
     this._board.update_html()
     this._board_hold.build_html()
     this._board_hold.update_html()

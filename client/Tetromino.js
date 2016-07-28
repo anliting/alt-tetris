@@ -105,7 +105,7 @@ Tetromino.prototype.set_autofall=function(){
     )
 }
 Tetromino.prototype.unset_autofall=function(){
-    clearTimeout(this.id_timeout_autofall);
+    clearTimeout(this.id_timeout_autofall)
 }
 Tetromino.prototype.reset_autofall=function(){
     this.unset_autofall()
