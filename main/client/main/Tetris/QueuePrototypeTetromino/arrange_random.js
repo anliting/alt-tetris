@@ -1,4 +1,4 @@
-(function(array,first,last){
+export default function(array,first,last){
     /*
      *  Arrange values in range [first,last) of array randomly.
      *  Return Value: None.
@@ -13,4 +13,4 @@
         // end swaping
         first++;
     }
-})
+}

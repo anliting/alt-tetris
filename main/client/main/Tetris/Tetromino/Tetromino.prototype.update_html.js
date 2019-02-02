@@ -1,4 +1,4 @@
-(function(){
+export default function(){
     let
         output=''
     var div_tetris=document.getElementById('div_tetris')
@@ -60,4 +60,4 @@
                     left:'+(17*j)+'px;\
                     "></div>'
     div_shadow.innerHTML=output
-})
+}

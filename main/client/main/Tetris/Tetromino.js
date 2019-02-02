@@ -1,10 +1,6 @@
-Promise.all([
-    module.shareImport('prototype_tetrominoes.js'),
-    module.shareImport('Tetromino.prototype.update_html.js'),
-    module.shareImport('Tetromino.prototype.view.get.js'),
-]).then(modules=>{
-let
-    prototype_tetrominoes=modules[0]
+import prototype_tetrominoes from './prototype_tetrominoes.js'
+import update_html from './Tetromino/Tetromino.prototype.update_html.js'
+import prototypeViewGet from './Tetromino/Tetromino.prototype.view.get.js'
 Tetromino.prototype.become_next=function(){
     this.prototype=this.queue_prototype_tetrominoes.access(0)
     this.queue_prototype_tetrominoes.pop()
@@ -90,8 +86,8 @@ Tetromino.prototype.harddrop=function(){
     while(this.transfer(0,-1,0)==0);
     this.drop()
 }
-Tetromino.prototype.update_html=modules[1]
-Object.defineProperty(Tetromino.prototype,'view',{get:modules[2]})
+Tetromino.prototype.update_html=update_html
+Object.defineProperty(Tetromino.prototype,'view',{get:prototypeViewGet})
 Tetromino.prototype.autofall=function(){
     this.set_autofall()
     if(this.transfer(0,-1,0))
@@ -121,5 +117,4 @@ function Tetromino(prototype,queue_prototype_tetrominoes,board){
     this.time_ms__autofall=1000
     this.id_timeout_autofall
 }
-return Tetromino
-})
+export default Tetromino

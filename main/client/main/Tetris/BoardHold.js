@@ -1,7 +1,4 @@
-Promise.all([
-    npm.events(),
-]).then(modules=>{
-let EventEmmiter=modules[0]
+import EventEmmiter from './EventEmitter.js'
 function BoardHold(tetromino){
     EventEmmiter.call(this)
     this.tetromino=tetromino
@@ -55,5 +52,4 @@ Object.defineProperty(BoardHold.prototype,'view',{get(){
     })
     return div
 }})
-return BoardHold
-})
+export default BoardHold

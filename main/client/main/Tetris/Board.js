@@ -1,11 +1,7 @@
-Promise.all([
-    module.shareImport('Board.prototype.update_html.js'),
-    module.shareImport('Board.prototype.update.js'),
-    module.shareImport('Board.prototype.insert.js'),
-    npm.events(),
-]).then(modules=>{
-let
-    EventEmmiter=modules[3]
+import update_html from './Board/Board.prototype.update_html.js'
+import update from './Board/Board.prototype.update.js'
+import insert from './Board/Board.prototype.insert.js'
+import EventEmmiter from './EventEmitter.js'
 function Board(){
     EventEmmiter.call(this)
     this.count_columns=10
@@ -21,9 +17,9 @@ function Board(){
     // end initializing
 }
 Board.prototype=Object.create(EventEmmiter.prototype)
-Board.prototype.update_html=modules[0]
-Board.prototype.update=modules[1]
-Board.prototype.insert=modules[2]
+Board.prototype.update_html=update_html
+Board.prototype.update=update
+Board.prototype.insert=insert
 Object.defineProperty(Board.prototype,'view',{get(){
     let
         div=document.createElement('div'),
@@ -66,5 +62,4 @@ function createBackCellsDiv(){
     div.style.top=0
     return div
 }
-return Board
-})
+export default Board

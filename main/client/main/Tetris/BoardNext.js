@@ -1,7 +1,4 @@
-Promise.all([
-    npm.events(),
-]).then(modules=>{
-let EventEmmiter=modules[0]
+import EventEmmiter from './EventEmitter.js'
 BoardNext.prototype=Object.create(EventEmmiter.prototype)
 BoardNext.prototype.update_html=function(){
     this.emit('update_html')
@@ -45,5 +42,4 @@ function BoardNext(tetromino,queue_prototype_tetrominoes){
     this.tetromino=tetromino
     this.queue_prototype_tetrominoes=queue_prototype_tetrominoes
 }
-return BoardNext
-})
+export default BoardNext

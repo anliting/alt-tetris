@@ -1,24 +1,10 @@
-let npm={
-    events:()=>module.module('EventEmmiter.js')
-}
-module.debug=true
-module=module.share({npm})
-Promise.all([
-    module.shareImport('Status.js'),
-    module.shareImport('Board.js'),
-    module.shareImport('BoardHold.js'),
-    module.shareImport('BoardNext.js'),
-    module.shareImport('Tetromino.js'),
-    module.shareImport('QueuePrototypeTetromino.js'),
-    module.shareImport('Tetris.prototype.listenToKeys.js'),
-]).then(modules=>{
-let
-    Status=modules[0],
-    Board=modules[1],
-    BoardHold=modules[2],
-    BoardNext=modules[3],
-    Tetromino=modules[4],
-    QueuePrototypeTetromino=modules[5]
+import Status from './Tetris/Status.js'
+import Board from './Tetris/Board.js'
+import BoardHold from './Tetris/BoardHold.js'
+import BoardNext from './Tetris/BoardNext.js'
+import Tetromino from './Tetris/Tetromino.js'
+import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
+import listenToKeys from './Tetris/Tetris.prototype.listenToKeys.js'
 function Tetris(){
     this._stdout=''
     this._board=new Board
@@ -35,7 +21,7 @@ function Tetris(){
     )
     this._status_game=new Status(this._tetromino,()=>this._stdout)
 }
-Tetris.prototype.listenToKeys=modules[6]
+Tetris.prototype.listenToKeys=listenToKeys
 Object.defineProperty(Tetris.prototype,'view',{get(){
     let
         div=document.createElement('div')
@@ -62,5 +48,4 @@ Tetris.prototype.setup=function(){
     })
     this.listenToKeys()
 }
-return Tetris
-})
+export default Tetris

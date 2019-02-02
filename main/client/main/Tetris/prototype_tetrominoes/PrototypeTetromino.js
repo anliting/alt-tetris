@@ -1,4 +1,4 @@
-(function(
+export default function(
     color,
     size,
     y_initial__relative,
@@ -12,4 +12,4 @@
     this.name=name
     this.array=array
     this.wallkickdata=wallkickdata
-})
+}
