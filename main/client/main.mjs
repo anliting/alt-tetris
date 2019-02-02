@@ -1,5 +1,5 @@
 import doe from '../../lib/doe.mjs'
-import Tetris from './main/Tetris.js'
+import Tetris from './main/Tetris.mjs'
 let tetris=new Tetris
 doe.head(
     doe.style(`
