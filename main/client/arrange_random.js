@@ -1,4 +1,4 @@
-var arrange_random=function(array,first,last){
+(function(array,first,last){
     /*
      *  Arrange values in range [first,last) of array randomly.
      *  Return Value: None.
@@ -13,5 +13,4 @@ var arrange_random=function(array,first,last){
         // end swaping
         first++;
     }
-}
-module.export=arrange_random
+})

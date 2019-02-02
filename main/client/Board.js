@@ -1,7 +1,7 @@
 Promise.all([
-    module.import('Board.prototype.update_html.js'),
-    module.import('Board.prototype.update.js'),
-    module.import('Board.prototype.insert.js'),
+    module.shareImport('Board.prototype.update_html.js'),
+    module.shareImport('Board.prototype.update.js'),
+    module.shareImport('Board.prototype.insert.js'),
     npm.events(),
 ]).then(modules=>{
 let
@@ -66,5 +66,5 @@ function createBackCellsDiv(){
     div.style.top=0
     return div
 }
-module.export=Board
+return Board
 })

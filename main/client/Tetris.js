@@ -1,5 +1,5 @@
 let npm={
-    events:()=>module.import('https://cdn.rawgit.com/anliting/module/ba2cb12b7f16bf066fc82d2ebd24200d6c857856/node/events.js')
+    events:()=>module.module('EventEmmiter.js')
 }
 module.debug=true
 module=module.share({npm})
@@ -19,7 +19,6 @@ let
     BoardNext=modules[3],
     Tetromino=modules[4],
     QueuePrototypeTetromino=modules[5]
-module.export=Tetris
 function Tetris(){
     this._stdout=''
     this._board=new Board
@@ -63,4 +62,5 @@ Tetris.prototype.setup=function(){
     })
     this.listenToKeys()
 }
+return Tetris
 })

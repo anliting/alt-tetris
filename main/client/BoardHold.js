@@ -55,5 +55,5 @@ Object.defineProperty(BoardHold.prototype,'view',{get(){
     })
     return div
 }})
-module.export=BoardHold
+return BoardHold
 })

@@ -1,3 +1,3 @@
-module.export=function(){
+(function(){
     this.emit('update_html')
-}
+})

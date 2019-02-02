@@ -111,7 +111,6 @@ Tetromino.prototype.reset_autofall=function(){
     this.unset_autofall()
     this.set_autofall()
 }
-module.export=Tetromino
 function Tetromino(prototype,queue_prototype_tetrominoes,board){
     this.prototype=prototype
     this.queue_prototype_tetrominoes=queue_prototype_tetrominoes
@@ -122,4 +121,5 @@ function Tetromino(prototype,queue_prototype_tetrominoes,board){
     this.time_ms__autofall=1000
     this.id_timeout_autofall
 }
+return Tetromino
 })

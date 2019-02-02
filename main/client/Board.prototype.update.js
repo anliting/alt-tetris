@@ -1,4 +1,4 @@
-module.export=function(){
+(function(){
     var y_new=0
     for(var y=0;y<this.count_rows;y++){
         var isfull=1
@@ -11,4 +11,4 @@ module.export=function(){
         }
     }
     this.update_html()
-}
+})

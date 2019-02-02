@@ -1,4 +1,4 @@
-module.import('Tetris.js').then(Tetris=>{
+module.shareImport('Tetris.js').then(Tetris=>{
     let tetris=new Tetris,div=document.createElement('div')
     div.style.position='fixed'
     div.style.backgroundColor='darkgray'

@@ -1,4 +1,4 @@
-module.export=function(){
+(function(){
     let
         output=''
     var div_tetris=document.getElementById('div_tetris')
@@ -60,4 +60,4 @@ module.export=function(){
                     left:'+(17*j)+'px;\
                     "></div>'
     div_shadow.innerHTML=output
-}
+})

@@ -1,4 +1,4 @@
-module.export=function(){
+(function(){
     let tetris=this
     this.keys={}
     this.times_key={}
@@ -54,4 +54,4 @@ module.export=function(){
     addEventListener('keyup',event=>{
         delete tetris.keys[event.which]
     })
-}
+})

@@ -1,6 +1,6 @@
 Promise.all([
-    module.import('PrototypeTetromino.js'),
-    module.import('Vector.js'),
+    module.shareImport('PrototypeTetromino.js'),
+    module.shareImport('Vector.js'),
 ]).then(modules=>{
 let
     PrototypeTetromino=modules[0],
@@ -174,5 +174,5 @@ prototype_tetrominoes[6]=new PrototypeTetromino(
         [1,0,0],
     ]
 ],prototype_tetrominoes[1].wallkickdata);
-module.export=prototype_tetrominoes
+return prototype_tetrominoes
 })

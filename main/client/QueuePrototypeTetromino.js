@@ -1,6 +1,6 @@
 Promise.all([
-    module.import('arrange_random.js'),
-    module.import('prototype_tetrominoes.js'),
+    module.shareImport('arrange_random.js'),
+    module.shareImport('prototype_tetrominoes.js'),
     npm.events(),
 ]).then(modules=>{
 let
@@ -8,7 +8,6 @@ let
     prototype_tetrominoes=modules[1],
     EventEmitter=modules[2]
 QueuePrototypeTetromino.prototype=Object.create(EventEmitter.prototype)
-module.export=QueuePrototypeTetromino
 function QueuePrototypeTetromino(){
     EventEmitter.call(this)
     this.queue=[]
@@ -31,4 +30,5 @@ function QueuePrototypeTetromino(){
         return this.queue[k]
     }
 }
+return QueuePrototypeTetromino
 })
