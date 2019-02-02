@@ -1,6 +1,5 @@
-import doe from '../../lib/doe.mjs'
-import Tetris from './main/Tetris.mjs'
-let tetris=new Tetris
+import doe from         '../../lib/doe.mjs'
+import Tetris from      './main/Tetris.mjs'
 doe.head(
     doe.style(`
         html{
@@ -29,5 +28,4 @@ doe.head(
         }
     `)
 )
-doe.body(doe.div(doe.div(doe.div(tetris.view))))
-tetris.setup()
+doe.body(doe.div(doe.div(doe.div((new Tetris).ui))))

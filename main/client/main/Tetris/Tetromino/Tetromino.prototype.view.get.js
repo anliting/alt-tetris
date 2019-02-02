@@ -1,13 +1,13 @@
 let get=function(){
     let
         div=document.createElement('div')
-    div.appendChild(createShadowDiv(
+    div.appendChild(this._node.shadow=createShadowDiv(
         17*this.x,
         17*(
             this.board.count_rows-(this.y+this.prototype.size)
         )
     ))
-    div.appendChild(createTetrisDiv(
+    div.appendChild(this._node.tetris=createTetrisDiv(
         17*this.x,
         17*(
             this.board.count_rows-(this.y+this.prototype.size)
@@ -17,7 +17,6 @@ let get=function(){
 }
 function createShadowDiv(left,top){
     let div=document.createElement('div')
-    div.id='div_shadow'
     div.style.position='absolute'
     div.style.backgroundColor='white'
     div.style.left=left+'px'
@@ -26,7 +25,6 @@ function createShadowDiv(left,top){
 }
 function createTetrisDiv(left,top){
     let div=document.createElement('div')
-    div.id='div_tetris'
     div.style.position='absolute'
     div.style.backgroundColor='white'
     div.style.left=left+'px'

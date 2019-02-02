@@ -1,6 +1,17 @@
 import prototype_tetrominoes from './prototype_tetrominoes.js'
 import update_html from './Tetromino/Tetromino.prototype.update_html.js'
 import prototypeViewGet from './Tetromino/Tetromino.prototype.view.get.js'
+function Tetromino(prototype,queue_prototype_tetrominoes,board){
+    this._node={}
+    this.prototype=prototype
+    this.queue_prototype_tetrominoes=queue_prototype_tetrominoes
+    this.board=board
+    this.direction=0
+    this.x=5+Math.floor(-this.prototype.size/2)
+    this.y=20+this.prototype.y_initial__relative
+    this.time_ms__autofall=1000
+    this.id_timeout_autofall
+}
 Tetromino.prototype.become_next=function(){
     this.prototype=this.queue_prototype_tetrominoes.access(0)
     this.queue_prototype_tetrominoes.pop()
@@ -106,15 +117,5 @@ Tetromino.prototype.unset_autofall=function(){
 Tetromino.prototype.reset_autofall=function(){
     this.unset_autofall()
     this.set_autofall()
-}
-function Tetromino(prototype,queue_prototype_tetrominoes,board){
-    this.prototype=prototype
-    this.queue_prototype_tetrominoes=queue_prototype_tetrominoes
-    this.board=board
-    this.direction=0
-    this.x=5+Math.floor(-this.prototype.size/2)
-    this.y=20+this.prototype.y_initial__relative
-    this.time_ms__autofall=1000
-    this.id_timeout_autofall
 }
 export default Tetromino

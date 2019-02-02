@@ -1,7 +1,7 @@
 export default function(){
     let
         output=''
-    var div_tetris=document.getElementById('div_tetris')
+    var div_tetris=this._node.tetris
     div_tetris.style.left=''+(17*this.x)+'px'
     div_tetris.style.top=''+(17*(
         this.board.count_rows_visible-(this.y+this.prototype.size)
@@ -34,7 +34,7 @@ export default function(){
         left:'+(17*this.prototype.size/2-9)+'px;\
         ">O</div>'
     div_tetris.innerHTML=output
-    var div_shadow=document.getElementById('div_shadow')
+    var div_shadow=this._node.shadow
     output=''
     var delta_y__shadow=0
     while(this.valid_transfer(0,delta_y__shadow-1,0))
