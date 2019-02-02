@@ -1,39 +1,33 @@
 import doe from '../../lib/doe.mjs'
 import Tetris from './main/Tetris.js'
 let tetris=new Tetris
-doe.html(
-    n=>{doe(n.style,{
-        height:'100%',
-    })},
+doe.head(
+    doe.style(`
+        html{
+            height:100%;
+        }
+        body{
+            height:100%;
+            margin:0;
+        }
+        body>div{
+            display:table;
+            width:100%;
+            height:100%;
+        }
+        body>div>*{
+            display:table-cell;
+            vertical-align:middle;
+            text-align:center;
+            line-height:0;
+        }
+        body>div>*>*{
+            display:inline-block;
+            position:relative;
+            background-color:darkgray;
+            line-height:1;
+        }
+    `)
 )
-doe.body(
-    n=>{doe(n.style,{
-        height:'100%',
-        margin:'0',
-    })},
-    doe.div(
-        n=>{doe(n.style,{
-            display:'table',
-            width:'100%',
-            height:'100%',
-        })},
-        doe.div(
-            n=>{doe(n.style,{
-                display:'table-cell',
-                verticalAlign:'middle',
-                textAlign:'center',
-                lineHeight:'0',
-            })},
-            doe.div(
-                n=>{doe(n.style,{
-                    display:'inline-block',
-                    position:'relative',
-                    backgroundColor:'darkgray',
-                    lineHeight:'1',
-                })},
-                tetris.view
-            )
-        )
-    )
-)
+doe.body(doe.div(doe.div(doe.div(tetris.view))))
 tetris.setup()
