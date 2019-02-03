@@ -7,7 +7,6 @@ import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from './Tetris/Tetris.prototype.listenToKeys.js'
 import doe from '../../../lib/doe.mjs'
 function Tetris(){
-    this._stdout=''
     this._board=new Board
     this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
     this._tetromino=new Tetromino(
@@ -21,20 +20,12 @@ function Tetris(){
         this._queue_prototype_tetrominoes
     )
     this._node={}
-    this._status_game=new Status(this._tetromino,()=>this._stdout)
+    this._status_game=new Status(this._tetromino)
     {
         this._queue_prototype_tetrominoes.pop()
         this._board.update_html()
         this._board_hold.update_html()
         this._board_next.update_html()
-        this.ui=doe.div(
-            {className:'tetris'},
-            this._node.board=this._board.view,
-            this._board_hold.view,
-            this._board_next.view,
-            this._status_game.view
-        )
-        this._node.board.appendChild(this._tetromino.view)
         this._tetromino.update_html()
         this._tetromino.set_autofall()
         this._queue_prototype_tetrominoes.on('pop',ev=>{
@@ -43,6 +34,15 @@ function Tetris(){
             })
         })
         listenToKeys.call(this)
+        this.ui=doe.div(
+            {className:'tetris'},
+            doe(this._node.board=this._board.view,
+                this._tetromino.view
+            ),
+            this._board_hold.view,
+            this._board_next.view,
+            this._status_game.view
+        )
     }
 }
 Tetris.style=`
