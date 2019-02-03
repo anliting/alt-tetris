@@ -1,4 +1,4 @@
-import doe from             '../../../../lib/doe.mjs'
+import doe from             '../../../lib/doe.mjs'
 import insert from          './Board/Board.prototype.insert.js'
 import update from          './Board/Board.prototype.update.js'
 import update_html from     './Board/Board.prototype.update_html.js'

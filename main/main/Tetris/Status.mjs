@@ -1,4 +1,4 @@
-import doe from '../../../../lib/doe.mjs'
+import doe from '../../../lib/doe.mjs'
 function Status(tetromino){
     this.tetromino=tetromino
     this.view=doe.div(n=>{doe(n.style,{

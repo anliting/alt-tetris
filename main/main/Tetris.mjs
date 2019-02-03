@@ -5,10 +5,32 @@ import BoardNext from               './Tetris/BoardNext.js'
 import Tetromino from               './Tetris/Tetromino.js'
 import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
-import doe from                     '../../../lib/doe.mjs'
+import doe from                     '../../lib/doe.mjs'
+function Game(){
+}
+Game.prototype.start=function(){
+    this.god.getNext()
+}
+Game.prototype.setNext=function(next){
+    console.log(next)
+}
+function God(){
+}
+God.prototype.getNext=function(){
+    //this.game.setNext('I')
+}
 function Tetris(){
-    this._status={
-        time:0,
+    this._game=new Game
+    this._game.god={
+        getNext:()=>{
+            this._god.getNext()
+        },
+    }
+    this._god=new God
+    this._god.game={
+        setNext:next=>{
+            this._game.setNext(next)
+        },
     }
     this._board=new Board
     this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
@@ -52,21 +74,19 @@ Tetris.style=`
         height:480px;
     }
 `
-Tetris.prototype.advance=function(time){
-    this._status.time+=time
+Tetris.prototype.start=function(){
+    this._start=~~performance.now()
+    this._game.start()
 }
 Tetris.prototype.install=function(){
     this._installation.animationFrameRequest
     let processAnimationFrame=()=>{
         this._installation.animationFrameRequest=
             requestAnimationFrame(processAnimationFrame)
-        let now=~~performance.now()
-        this.advance(now-this._installation.startTime)
-        this._installation.startTime=now
+        //console.log(~~performance.now()-this._start)
     }
     this._installation.animationFrameRequest=
         requestAnimationFrame(processAnimationFrame)
-    this._installation.startTime=~~performance.now()
 }
 Tetris.prototype.uninstall=function(){
     cancelAnimationFrame(this._installation.animationFrameRequest)

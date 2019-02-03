@@ -1,4 +1,4 @@
-import doe from         '../../lib/doe.mjs'
+import doe from         '../lib/doe.mjs'
 import Tetris from      './main/Tetris.mjs'
 doe.head(
     doe.style(`
@@ -37,3 +37,4 @@ tetris.install()
 doe.body(doe.div(doe.div(doe.div(tetris.ui))))
 tetris.ui.focus()
 window.tetris=tetris
+tetris.start()

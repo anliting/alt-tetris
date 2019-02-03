@@ -1,4 +1,4 @@
-import doe from '../../../../lib/doe.mjs'
+import doe from '../../../lib/doe.mjs'
 function BoardHold(tetromino){
     this.tetromino=tetromino
     this.view=doe.div(

@@ -1,4 +1,4 @@
-import doe from '../../../../lib/doe.mjs'
+import doe from '../../../lib/doe.mjs'
 function BoardNext(tetromino,queue_prototype_tetrominoes){
     this.tetromino=tetromino
     this.queue_prototype_tetrominoes=queue_prototype_tetrominoes
