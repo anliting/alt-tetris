@@ -11,6 +11,7 @@ function Tetromino(prototype,queue_prototype_tetrominoes,board){
     this.y=20+this.prototype.y_initial__relative
     this.time_ms__autofall=1000
     this.id_timeout_autofall
+    this.view=prototypeViewGet.call(this)
 }
 Tetromino.prototype.become_next=function(){
     this.prototype=this.queue_prototype_tetrominoes.access(0)
@@ -98,7 +99,6 @@ Tetromino.prototype.harddrop=function(){
     this.drop()
 }
 Tetromino.prototype.update_html=update_html
-Object.defineProperty(Tetromino.prototype,'view',{get:prototypeViewGet})
 Tetromino.prototype.autofall=function(){
     this.set_autofall()
     if(this.transfer(0,-1,0))

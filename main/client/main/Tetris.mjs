@@ -5,6 +5,7 @@ import BoardNext from './Tetris/BoardNext.js'
 import Tetromino from './Tetris/Tetromino.js'
 import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from './Tetris/Tetris.prototype.listenToKeys.js'
+import doe from '../../../lib/doe.mjs'
 function Tetris(){
     this._stdout=''
     this._board=new Board
@@ -22,18 +23,20 @@ function Tetris(){
     this._node={}
     this._status_game=new Status(this._tetromino,()=>this._stdout)
     {
-        let div=document.createElement('div')
-        div.style.width='640px'
-        div.style.height='480px'
-        div.appendChild(this._node.board=this._board.view)
-        div.appendChild(this._board_hold.view)
-        div.appendChild(this._board_next.view)
-        div.appendChild(this._status_game.view)
         this._queue_prototype_tetrominoes.pop()
         this._board.update_html()
         this._board_hold.update_html()
         this._board_next.update_html()
-        this.ui=div
+        this.ui=doe.div(
+            n=>{doe(n.style,{
+                width:'640px',
+                height:'480px',
+            })},
+            this._node.board=this._board.view,
+            this._board_hold.view,
+            this._board_next.view,
+            this._status_game.view
+        )
         this._node.board.appendChild(this._tetromino.view)
         this._tetromino.update_html()
         this._tetromino.set_autofall()
