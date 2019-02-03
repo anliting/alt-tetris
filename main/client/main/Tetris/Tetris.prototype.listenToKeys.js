@@ -47,11 +47,11 @@ export default function(){
         tetris._status_game.update_html()
     }
     keyevents()
-    addEventListener('keydown',event=>{
+    this.ui.addEventListener('keydown',event=>{
         tetris.keys[event.which]=true
         tetris.times_key[event.which]=0
     })
-    addEventListener('keyup',event=>{
+    this.ui.addEventListener('keyup',event=>{
         delete tetris.keys[event.which]
     })
 }

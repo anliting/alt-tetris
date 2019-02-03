@@ -26,7 +26,14 @@ doe.head(
             background-color:darkgray;
             line-height:1;
         }
+        body>div>*>*>*{
+            outline:none;
+        }
         ${Tetris.style}
     `)
 )
-doe.body(doe.div(doe.div(doe.div((new Tetris).ui))))
+let tetris=new Tetris
+tetris.install()
+doe.body(doe.div(doe.div(doe.div(tetris.ui))))
+tetris.ui.focus()
+window.tetris=tetris

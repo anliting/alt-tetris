@@ -1,12 +1,15 @@
-import Status from './Tetris/Status.mjs'
-import Board from './Tetris/Board.js'
-import BoardHold from './Tetris/BoardHold.js'
-import BoardNext from './Tetris/BoardNext.js'
-import Tetromino from './Tetris/Tetromino.js'
+import Status from                  './Tetris/Status.mjs'
+import Board from                   './Tetris/Board.js'
+import BoardHold from               './Tetris/BoardHold.js'
+import BoardNext from               './Tetris/BoardNext.js'
+import Tetromino from               './Tetris/Tetromino.js'
 import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
-import listenToKeys from './Tetris/Tetris.prototype.listenToKeys.js'
-import doe from '../../../lib/doe.mjs'
+import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
+import doe from                     '../../../lib/doe.mjs'
 function Tetris(){
+    this._status={
+        time:0,
+    }
     this._board=new Board
     this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
     this._tetromino=new Tetromino(
@@ -34,9 +37,8 @@ function Tetris(){
     this._board_next.update_html()
     this._tetromino.update_html()
     this._tetromino.set_autofall()
-    listenToKeys.call(this)
     this.ui=doe.div(
-        {className:'tetris'},
+        {className:'tetris',tabIndex:-1},
         doe(this._node.board=this._board.view,
             this._tetromino.view
         ),
@@ -44,6 +46,8 @@ function Tetris(){
         this._board_next.view,
         this._status_game.view
     )
+    listenToKeys.call(this)
+    this._installation={}
 }
 Tetris.style=`
     .tetris{
@@ -51,4 +55,23 @@ Tetris.style=`
         height:480px;
     }
 `
+Tetris.prototype.advance=function(time){
+    this._status.time+=time
+}
+Tetris.prototype.install=function(){
+    this._installation.animationFrameRequest
+    let processAnimationFrame=()=>{
+        this._installation.animationFrameRequest=
+            requestAnimationFrame(processAnimationFrame)
+        let now=~~performance.now()
+        this.advance(now-this._installation.startTime)
+        this._installation.startTime=now
+    }
+    this._installation.animationFrameRequest=
+        requestAnimationFrame(processAnimationFrame)
+    this._installation.startTime=~~performance.now()
+}
+Tetris.prototype.uninstall=function(){
+    cancelAnimationFrame(this._installation.animationFrameRequest)
+}
 export default Tetris
