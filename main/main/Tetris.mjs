@@ -7,23 +7,23 @@ import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
 import doe from                     '../../lib/doe.mjs'
 function Game(){
-    this._status={
+    this.status={
         godChoice:[0,0,0,0,0,0,0],
     }
 }
 Game.prototype.start=function(){
-    this.god.getNext(this._status.godChoice)
+    this.god.getNext(this.status.godChoice)
 }
 Game.prototype.setNext=function(next){
-    if(this._status.current==undefined){
-        this._status.current=next
+    if(this.status.current==undefined){
+        this.status.current=next
     }else
-        this._status.next=next
-    this._status.godChoice[next]=1
-    if(this._status.godChoice.reduce((a,b)=>a+b)==7)
-        this._status.godChoice=[0,0,0,0,0,0,0]
-    if(this._status.next==undefined)
-        this.god.getNext(this._status.godChoice)
+        this.status.next=next
+    this.status.godChoice[next]=1
+    if(this.status.godChoice.reduce((a,b)=>a+b)==7)
+        this.status.godChoice=[0,0,0,0,0,0,0]
+    if(this.status.next==undefined)
+        this.god.getNext(this.status.godChoice)
 }
 function God(){
 }
