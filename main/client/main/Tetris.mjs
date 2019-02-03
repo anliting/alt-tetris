@@ -28,10 +28,7 @@ function Tetris(){
         this._board_hold.update_html()
         this._board_next.update_html()
         this.ui=doe.div(
-            n=>{doe(n.style,{
-                width:'640px',
-                height:'480px',
-            })},
+            {className:'tetris'},
             this._node.board=this._board.view,
             this._board_hold.view,
             this._board_next.view,
@@ -48,4 +45,10 @@ function Tetris(){
         listenToKeys.call(this)
     }
 }
+Tetris.style=`
+    .tetris{
+        width:640px;
+        height:480px;
+    }
+`
 export default Tetris

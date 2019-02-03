@@ -26,6 +26,7 @@ doe.head(
             background-color:darkgray;
             line-height:1;
         }
+        ${Tetris.style}
     `)
 )
 doe.body(doe.div(doe.div(doe.div((new Tetris).ui))))
