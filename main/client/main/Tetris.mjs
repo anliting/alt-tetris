@@ -22,7 +22,6 @@ function Tetris(){
         this._tetromino,
         this._queue_prototype_tetrominoes
     )
-    this._node={}
     this._status_game=new Status(this._tetromino)
     this._queue_prototype_tetrominoes.out={
         pop:ev=>{
@@ -39,9 +38,7 @@ function Tetris(){
     this._tetromino.set_autofall()
     this.ui=doe.div(
         {className:'tetris',tabIndex:-1},
-        doe(this._node.board=this._board.view,
-            this._tetromino.view
-        ),
+        doe(this._board.view,this._tetromino.view),
         this._board_hold.view,
         this._board_next.view,
         this._status_game.view
