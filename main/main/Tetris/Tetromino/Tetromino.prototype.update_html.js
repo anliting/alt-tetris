@@ -1,6 +1,5 @@
 export default function(){
-    let
-        output=''
+    let output=''
     var div_tetris=this._node.tetris
     div_tetris.style.left=''+(17*this.x)+'px'
     div_tetris.style.top=''+(17*(
