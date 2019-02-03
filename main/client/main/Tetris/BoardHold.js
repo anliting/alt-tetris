@@ -1,43 +1,14 @@
-import EventEmmiter from './EventEmitter.js'
+import doe from '../../../../lib/doe.mjs'
 function BoardHold(tetromino){
-    EventEmmiter.call(this)
     this.tetromino=tetromino
-    {
-        let div=document.createElement('div')
-        div.style.position='absolute'
-        div.style.left='80px'
-        div.style.top='80px'
-        this.on('update_html',()=>{
-            if(typeof this.prototype=='undefined')
-                return
-            var div_boardhold=div
-            var output=''
-            for(var r=0;r<this.prototype.size;r++){
-                for(var c=0;c<this.prototype.size;c++){
-                    if(this.prototype.array[this.tetromino.direction]
-                        [r][c]){
-                        output+=
-    '                       <div \
-                            style="\
-                            position:absolute;\
-                            background-color:\
-                            '+(this.prototype.color)+';\
-                            width:16px;\
-                            height:16px;\
-                            top:'+17*r+'px;\
-                            left:'+17*c+'px;\
-                            "\
-                        ></div>\
-    ';
-                    }
-                }
-            }
-            div_boardhold.innerHTML=output
-        })
-        this.view=div
-    }
+    this.view=doe.div(
+        n=>{
+            n.style.position='absolute'
+            n.style.left='80px'
+            n.style.top='80px'
+        }
+    )
 }
-BoardHold.prototype=Object.create(EventEmmiter.prototype)
 BoardHold.prototype.hold=function(){
     if(typeof this.prototype=='undefined'){
         this.prototype=this.tetromino.prototype
@@ -50,6 +21,29 @@ BoardHold.prototype.hold=function(){
     this.tetromino.return_source()
 }
 BoardHold.prototype.update_html=function(){
-    this.emit('update_html')
+    if(typeof this.prototype=='undefined')
+        return
+    var output=''
+    for(var r=0;r<this.prototype.size;r++){
+        for(var c=0;c<this.prototype.size;c++){
+            if(this.prototype.array[this.tetromino.direction]
+                [r][c]){
+                output+=
+'                       <div \
+                    style="\
+                    position:absolute;\
+                    background-color:\
+                    '+(this.prototype.color)+';\
+                    width:16px;\
+                    height:16px;\
+                    top:'+17*r+'px;\
+                    left:'+17*c+'px;\
+                    "\
+                ></div>\
+';
+            }
+        }
+    }
+    this.view.innerHTML=output
 }
 export default BoardHold

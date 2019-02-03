@@ -1,9 +1,6 @@
 import arrange_random from './QueuePrototypeTetromino/arrange_random.js'
 import prototype_tetrominoes from './prototype_tetrominoes.js'
-import EventEmitter from './EventEmitter.js'
-QueuePrototypeTetromino.prototype=Object.create(EventEmitter.prototype)
 function QueuePrototypeTetromino(){
-    EventEmitter.call(this)
     this.queue=[]
     this.push=function(){
         for(let i=0;i<7;i++)
@@ -12,9 +9,7 @@ function QueuePrototypeTetromino(){
     }
     this.pop=function(){
         let resolve
-        this.emit('pop',new Promise(rs=>{
-            resolve=rs
-        }))
+        this.out.pop(new Promise(rs=>resolve=rs))
         this.queue.shift()
         resolve()
     }

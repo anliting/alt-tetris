@@ -1,10 +1,8 @@
 import update_html from     './Board/Board.prototype.update_html.js'
 import update from          './Board/Board.prototype.update.js'
 import insert from          './Board/Board.prototype.insert.js'
-import EventEmmiter from    './EventEmitter.js'
 import doe from             '../../../../lib/doe.mjs'
 function Board(){
-    EventEmmiter.call(this)
     this.count_columns=10
     this.count_rows=24
     this.count_rows_visible=20
@@ -24,7 +22,6 @@ function Board(){
         this._node.backCellsDiv=createBackCellsDiv(),
     )
 }
-Board.prototype=Object.create(EventEmmiter.prototype)
 Board.prototype.update_html=update_html
 Board.prototype.update=update
 Board.prototype.insert=insert
