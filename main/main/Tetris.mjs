@@ -48,6 +48,7 @@ function Tetris(){
             this._game.setNext(next)
         },
     }
+    this._node={}
     this._board=new Board
     this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
     this._tetromino=new Tetromino(
@@ -76,10 +77,11 @@ function Tetris(){
     this._tetromino.set_autofall()
     this.ui=doe.div(
         {className:'tetris',tabIndex:-1},
+        this._node.canvas=doe.canvas({width:640,height:480}),
         doe(this._board.view,this._tetromino.view),
         this._board_hold.view,
         this._board_next.view,
-        this._status_game.view
+        this._status_game.view,
     )
     listenToKeys.call(this)
     this._installation={}
@@ -95,11 +97,13 @@ Tetris.prototype.start=function(){
     this._game.start()
 }
 Tetris.prototype.install=function(){
-    this._installation.animationFrameRequest
     let processAnimationFrame=()=>{
         this._installation.animationFrameRequest=
             requestAnimationFrame(processAnimationFrame)
         //console.log(~~performance.now()-this._start)
+        let context=this._node.canvas.getContext('2d')
+        context.fillStyle='darkgray'
+        context.fillRect(0,0,640,480)
     }
     this._installation.animationFrameRequest=
         requestAnimationFrame(processAnimationFrame)
