@@ -52,9 +52,40 @@ function Tetris(){
     this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
     this._tetromino=new Tetromino(
         this._queue_prototype_tetrominoes.access(0),
-        this._queue_prototype_tetrominoes,
-        this._board
+        this._queue_prototype_tetrominoes
     )
+    this._tetromino.drop=()=>{
+        this._board.insert(this._tetromino)
+        this._board.update_html()
+        this._tetromino.become_next()
+        this._tetromino.return_source()
+    }
+    this._tetromino.valid_transfer=(dx,dy,dd)=>{
+        let direction_new=((this._tetromino.direction+dd)%4+4)%4
+        for(let r=0;r<this._tetromino.prototype.size;r++)
+            for(let c=0;c<this._tetromino.prototype.size;c++){
+                let x_expandedboard=this._tetromino.x+dx+c
+                let y_expandedboard=this._tetromino.y+dy+this._tetromino.prototype.size-1-r
+                let value_expandedboard=
+                    0<=x_expandedboard
+                    &&x_expandedboard<10
+                    &&0<=y_expandedboard
+                    &&y_expandedboard<24
+                        ?this._board.array[x_expandedboard][y_expandedboard]
+                        :
+                            0<=x_expandedboard
+                            &&x_expandedboard<10
+                            &&0<=y_expandedboard
+                                ?0
+                                :1;
+                if(
+                    value_expandedboard&&
+                    this._tetromino.prototype.array[direction_new][r][c]
+                )
+                    return 0
+            }
+        return 1
+    }
     this._board_hold=new BoardHold(this._tetromino)
     this._board_next=new BoardNext(
         this._tetromino,

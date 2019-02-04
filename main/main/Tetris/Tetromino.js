@@ -1,11 +1,10 @@
 import prototype_tetrominoes from './prototype_tetrominoes.js'
 import update_html from './Tetromino/Tetromino.prototype.update_html.js'
 import prototypeViewGet from './Tetromino/Tetromino.prototype.view.get.js'
-function Tetromino(prototype,queue_prototype_tetrominoes,board){
+function Tetromino(prototype,queue_prototype_tetrominoes){
     this._node={}
     this.prototype=prototype
     this.queue_prototype_tetrominoes=queue_prototype_tetrominoes
-    this.board=board
     this.direction=0
     this.x=5+Math.floor(-this.prototype.size/2)
     this.y=20+this.prototype.y_initial__relative
@@ -22,32 +21,6 @@ Tetromino.prototype.return_source=function(){
     this.x=5+Math.floor(-this.prototype.size/2)
     this.y=20+this.prototype.y_initial__relative
     this.update_html()
-}
-Tetromino.prototype.valid_transfer=function(dx,dy,dd){
-    let direction_new=((this.direction+dd)%4+4)%4
-    for(let r=0;r<this.prototype.size;r++)
-        for(let c=0;c<this.prototype.size;c++){
-            let x_expandedboard=this.x+dx+c
-            let y_expandedboard=this.y+dy+this.prototype.size-1-r
-            let value_expandedboard=
-                0<=x_expandedboard
-                &&x_expandedboard<this.board.count_columns
-                &&0<=y_expandedboard
-                &&y_expandedboard<this.board.count_rows
-                    ?this.board.array[x_expandedboard][y_expandedboard]
-                    :
-                        0<=x_expandedboard
-                        &&x_expandedboard<this.board.count_columns
-                        &&0<=y_expandedboard
-                            ?0
-                            :1;
-            if(
-                value_expandedboard&&
-                this.prototype.array[direction_new][r][c]
-            )
-                return 0
-        }
-    return 1
 }
 Tetromino.prototype.transfer=function(dx,dy,dd){
     if(!this.valid_transfer(dx,dy,dd))
@@ -78,12 +51,6 @@ Tetromino.prototype.rotate=function(mode){
         }
     }
     return 5
-}
-Tetromino.prototype.drop=function(){
-    this.board.insert(this)
-    this.board.update_html()
-    this.become_next()
-    this.return_source()
 }
 Tetromino.prototype.softdrop=function(){
     if(this.transfer(0,-1,0))

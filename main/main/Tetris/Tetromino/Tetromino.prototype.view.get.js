@@ -4,13 +4,13 @@ let get=function(){
         this._node.shadow=createShadowDiv(
             17*this.x,
             17*(
-                this.board.count_rows-(this.y+this.prototype.size)
+                24-(this.y+this.prototype.size)
             )
         ),
         this._node.tetris=createTetrisDiv(
             17*this.x,
             17*(
-                this.board.count_rows-(this.y+this.prototype.size)
+                24-(this.y+this.prototype.size)
             )
         )
     )

@@ -1,10 +1,10 @@
 export default function(){
     let
         output=''
-    for(let x=0;x<this.count_columns;x++)
-        for(let y=0;y<this.count_rows_visible;y++){
+    for(let x=0;x<10;x++)
+        for(let y=0;y<20;y++){
             let
-                r=this.count_rows_visible-1-y,
+                r=20-1-y,
                 c=x
             output+='<div \
                     style="\
