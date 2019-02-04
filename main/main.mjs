@@ -23,7 +23,6 @@ doe.head(
         body>div>*>*{
             display:inline-block;
             position:relative;
-            background-color:darkgray;
             line-height:1;
         }
         body>div>*>*>*{
