@@ -1,6 +1,5 @@
 import prototype_tetrominoes from   './Tetris/prototype_tetrominoes.js'
 import Tetromino from               './Tetris/Tetromino.js'
-import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
 import Game from                    './Tetris/Game.mjs'
 import God from                     './Tetris/God.mjs'
@@ -28,10 +27,17 @@ function Tetris(){
             this._god.getNext(choice)
         },
     }
+    this._game.getCurrent=()=>{
+        if(this._game.status.next==undefined)
+            return
+        this._tetromino.prototype=prototype_tetrominoes[this._game.status.next]
+        delete this._game.status.next
+        this._game.god.getNext(this._game.status.godChoice)
+    }
     this._game.hold=()=>{
         if(typeof this._game.status.hold=='undefined'){
             this._game.status.hold=this._tetromino.prototype.id
-            this._tetromino.become_next()
+            this._game.getCurrent()
         }else{
             let temp=prototype_tetrominoes[this._game.status.hold]
             this._game.status.hold=this._tetromino.prototype.id
@@ -46,15 +52,7 @@ function Tetris(){
         },
     }
     this._uiCache={}
-    this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
-    this._tetromino=new Tetromino(
-        this._queue_prototype_tetrominoes.access(0),
-        this._queue_prototype_tetrominoes
-    )
-    this._tetromino.become_next=()=>{
-        this._tetromino.prototype=this._queue_prototype_tetrominoes.access(0)
-        this._queue_prototype_tetrominoes.pop()
-    }
+    this._tetromino=new Tetromino(prototype_tetrominoes[0])
     this._tetromino.drop=()=>{
         this._game.board.put(
             this._tetromino.prototype.id,
@@ -63,7 +61,7 @@ function Tetris(){
             this._tetromino.y,
         )
         setTimeout(()=>{this._game.board.update()},200)
-        this._tetromino.become_next()
+        this._game.getCurrent()
         this._tetromino.return_source()
     }
     this._tetromino.valid_transfer=(dx,dy,dd)=>{
@@ -145,7 +143,6 @@ function Tetris(){
         this.unset_autofall()
         this.set_autofall()
     }
-    this._queue_prototype_tetrominoes.pop()
     this._tetromino.set_autofall()
     this.ui=doe.canvas({
         className:'tetris',tabIndex:-1,width:640,height:480
@@ -210,9 +207,8 @@ Tetris.prototype.install=function(){
         this._uiCache.context.fillStyle='darkgray'
         this._uiCache.context.fillRect(0,0,640,480)
         this._drawBoardAt(160,80)
-        this._drawTetrominoAt(400,80,
-            this._queue_prototype_tetrominoes.access(0).id
-        )
+        if(this._game.status.next!=undefined)
+            this._drawTetrominoAt(400,80,this._game.status.next)
         if(this._game.status.hold!=undefined)
             this._drawTetrominoAt(80,80,this._game.status.hold)
         let frameTime=performance.now()-frameStart
