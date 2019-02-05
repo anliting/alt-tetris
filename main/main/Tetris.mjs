@@ -1,4 +1,3 @@
-import Tetromino from               './Tetris/Tetromino.js'
 import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
 import Game from                    './Tetris/Game.mjs'
 import God from                     './Tetris/God.mjs'
@@ -20,23 +19,6 @@ function Tetris(){
             this._god.getNext(choice)
         },
     }
-    this._game.getCurrent=()=>{
-        if(this._game.status.next==undefined)
-            return
-        this._game._setCurrent(this._game.status.next)
-        delete this._game.status.next
-        this._game.god.getNext(this._game.status.godChoice)
-    }
-    this._game.hold=()=>{
-        if(typeof this._game.status.hold=='undefined'){
-            this._game.status.hold=this._game.status.current.type
-            this._game.getCurrent()
-        }else{
-            let temp=this._game.status.hold
-            this._game.status.hold=this._game.status.current.type
-            this._game._setCurrent(temp)
-        }
-    }
     this._god=new God
     this._god.game={
         setNext:next=>{
@@ -44,7 +26,7 @@ function Tetris(){
         },
     }
     this._uiCache={}
-    this._tetromino=new Tetromino
+    this._tetromino={}
     this._tetromino.softdrop=()=>{
         if(this._game.transfer(0,-1,0))
             return 1
@@ -55,19 +37,17 @@ function Tetris(){
         while(this._game.transfer(0,-1,0)==0);
         this._game.drop()
     }
-    this._tetromino.autofall=()=>{
-        this._tetromino.set_autofall()
-        if(this._game.transfer(0,-1,0))
-            this._game.drop()
-    }
     this._tetromino.set_autofall=()=>{
-        this._tetromino.id_timeout_autofall=setTimeout(
-            ()=>{this._tetromino.autofall()},
-            this._tetromino.time_ms__autofall
+        this._tetromino.id_timeout_autofall=setInterval(
+            ()=>{
+                if(this._game.transfer(0,-1,0))
+                    this._game.drop()
+            },
+            1e3
         )
     }
     this._tetromino.unset_autofall=()=>{
-        clearTimeout(this._tetromino.id_timeout_autofall)
+        clearInterval(this._tetromino.id_timeout_autofall)
     }
     this._tetromino.reset_autofall=()=>{
         this._tetromino.unset_autofall()
@@ -129,7 +109,7 @@ Tetris.prototype._shadowPosition=function(){
 }
 Tetris.prototype.start=function(){
     this._start=~~performance.now()
-    this._game.start()
+    this._god.getNext([0,0,0,0,0,0,0])
 }
 Tetris.prototype.install=function(){
     this._uiPerformanceStatistics={

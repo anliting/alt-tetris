@@ -2,6 +2,7 @@ import Board from                   './Game/Board.mjs'
 import constant from                './constant.mjs'
 let initialY=[-2,-1,-1,0,-1,-1,-1]
 function Game(){
+    this._history=[]
     this.status={
         godChoice:[0,0,0,0,0,0,0],
     }
@@ -11,12 +12,12 @@ Game.prototype._setCurrent=function(type){
     this.status.current={
         type,
         direction:0,
-        x:5+~~(-constant.shape[type][0].length/2),
+        x:5+Math.floor(-constant.shape[type][0].length/2),
         y:20+initialY[type],
     }
 }
-Game.prototype.start=function(){
-    this.god.getNext(this.status.godChoice)
+Game.prototype.in=function(event){
+    this._history.push(event)
 }
 Game.prototype.setNext=function(next){
     if(this.status.current==undefined)
@@ -81,5 +82,22 @@ Game.prototype.rotate=function(mode){
         )==0)
             return i
     return 5
+}
+Game.prototype.getCurrent=function(){
+    if(this.status.next==undefined)
+        return
+    this._setCurrent(this.status.next)
+    delete this.status.next
+    this.god.getNext(this.status.godChoice)
+}
+Game.prototype.hold=function(){
+    if(typeof this.status.hold=='undefined'){
+        this.status.hold=this.status.current.type
+        this.getCurrent()
+    }else{
+        let temp=this.status.hold
+        this.status.hold=this.status.current.type
+        this._setCurrent(temp)
+    }
 }
 export default Game

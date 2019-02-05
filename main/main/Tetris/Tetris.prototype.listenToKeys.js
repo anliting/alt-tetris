@@ -2,10 +2,7 @@ export default function(){
     this.keys={}
     this.times_key={}
     var timeout_keyevents
-    var keyevents=()=>{
-        timeout_keyevents=setTimeout(()=>{
-            keyevents()
-        },25)
+    setInterval(()=>{
         if(this.keys[32]){    // space: hard drop
             if(this.times_key[32]%8==0)
                 this._tetromino.harddrop()
@@ -42,8 +39,7 @@ export default function(){
         for(let i=0;i<128;i++)
             if(this.keys[i])
                 this.times_key[i]++
-    }
-    keyevents()
+    },25)
     this.ui.addEventListener('keydown',event=>{
         this.keys[event.which]=true
         this.times_key[event.which]=0
