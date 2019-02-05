@@ -12,7 +12,7 @@ export default function(){
         }
         if(this.keys[37]){    // left arrow
             if(this.times_key[37]%4==0)
-                this._tetromino.transfer(-1,0,0)
+                this._game.transfer(-1,0,0)
         }
         if(this.keys[38]){    // up arrow: 順時鐘轉
             if(this.times_key[38]%8==0)
@@ -20,7 +20,7 @@ export default function(){
         }
         if(this.keys[39]){    // right arrow
             if(this.times_key[39]%4==0)
-                this._tetromino.transfer(1,0,0)
+                this._game.transfer(1,0,0)
         }
         if(this.keys[40]){    // down arrow: soft drop
             if(this.times_key[40]%4==0)

@@ -4,7 +4,7 @@ import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
 import Game from                    './Tetris/Game.mjs'
 import God from                     './Tetris/God.mjs'
 import doe from                     '../../lib/doe.mjs'
-import constant from                './constant.mjs'
+import constant from                './Tetris/constant.mjs'
 let color=[
     '#00FFFF',  // Aqua
     '#0000FF',  // Standard Blue
@@ -30,20 +30,19 @@ function Tetris(){
     this._game.getCurrent=()=>{
         if(this._game.status.next==undefined)
             return
-        this._tetromino.prototype=prototype_tetrominoes[this._game.status.next]
+        this._game._setCurrent(this._game.status.next)
         delete this._game.status.next
         this._game.god.getNext(this._game.status.godChoice)
     }
     this._game.hold=()=>{
         if(typeof this._game.status.hold=='undefined'){
-            this._game.status.hold=this._tetromino.prototype.id
+            this._game.status.hold=this._game.status.current.type
             this._game.getCurrent()
         }else{
-            let temp=prototype_tetrominoes[this._game.status.hold]
-            this._game.status.hold=this._tetromino.prototype.id
-            this._tetromino.prototype=temp
+            let temp=this._game.status.hold
+            this._game.status.hold=this._game.status.current.type
+            this._game._setCurrent(temp)
         }
-        this._tetromino.return_source()
     }
     this._god=new God
     this._god.game={
@@ -53,95 +52,86 @@ function Tetris(){
     }
     this._uiCache={}
     this._tetromino=new Tetromino(prototype_tetrominoes[0])
-    this._tetromino.drop=()=>{
-        this._game.board.put(
-            this._tetromino.prototype.id,
-            this._tetromino.direction,
-            this._tetromino.x,
-            this._tetromino.y,
+    this._game.drop=function(){
+        this.board.put(
+            this.status.current.type,
+            this.status.current.direction,
+            this.status.current.x,
+            this.status.current.y,
         )
-        setTimeout(()=>{this._game.board.update()},200)
-        this._game.getCurrent()
-        this._tetromino.return_source()
+        setTimeout(()=>{this.board.update()},200)
+        this.getCurrent()
     }
-    this._tetromino.valid_transfer=(dx,dy,dd)=>{
+    this._game.valid_transfer=function(dx,dy,dd){
         let
-            direction_new=((this._tetromino.direction+dd)%4+4)%4,
-            shape=constant.shape[this._tetromino.prototype.id][direction_new],
+            direction_new=((this.status.current.direction+dd)%4+4)%4,
+            shape=constant.shape[this.status.current.type][direction_new],
             n=shape.length
         for(let r=0;r<n;r++)
         for(let c=0;c<n;c++)
         if(shape[r][c]){
-            let x=this._tetromino.x+dx+c
-            let y=this._tetromino.y+dy+n-1-r
+            let x=this.status.current.x+dx+c
+            let y=this.status.current.y+dy+n-1-r
             if(!(
                 0<=x&&x<10&&0<=y&&y<24&&
-                this._game.board.array[x][y]==undefined
+                this.board.array[x][y]==undefined
             ))
                 return 0
         }
         return 1
     }
-    this._tetromino.return_source=function(){
-        this.direction=0
-        this.x=5+Math.floor(-this.prototype.size/2)
-        this.y=20+this.prototype.y_initial__relative
-    }
-    this._tetromino.transfer=function(dx,dy,dd){
+    this._game.transfer=function(dx,dy,dd){
         if(!this.valid_transfer(dx,dy,dd))
             return 1
-        this.x+=dx
-        this.y+=dy
-        this.direction=((this.direction+dd)%4+4)%4
+        this.status.current.x+=dx
+        this.status.current.y+=dy
+        this.status.current.direction=((this.status.current.direction+dd)%4+4)%4
         return 0
     }
-    this._tetromino.rotate=function(mode){
+    this._tetromino.rotate=mode=>{
         /*
          *  Rotate the tetromino with given mode.
          *  Return value: Return the order of wallkick if success,
          *      otherwise return 5.
          */
-        let dd=mode==0?-1:1
+        let dd=mode==0?-1:1,wk=constant.srsWallKick[this._game.status.current.type][2*this._game.status.current.direction+mode]
         for(let i=0;i<5;i++)
-            if(this.transfer(
-                this.prototype.wallkickdata[
-                    2*this.direction+mode
-                ][i][0],
-                this.prototype.wallkickdata[
-                    2*this.direction+mode
-                ][i][1],
+
+            if(this._game.transfer(
+                wk[i][0],
+                wk[i][1],
                 dd
             )==0)
                 return i
         return 5
     }
-    this._tetromino.softdrop=function(){
-        if(this.transfer(0,-1,0))
+    this._tetromino.softdrop=()=>{
+        if(this._game.transfer(0,-1,0))
             return 1
-        this.reset_autofall()
+        this._tetromino.reset_autofall()
         return 0
     }
-    this._tetromino.harddrop=function(){
-        while(this.transfer(0,-1,0)==0);
-        this.drop()
+    this._tetromino.harddrop=()=>{
+        while(this._game.transfer(0,-1,0)==0);
+        this._game.drop()
     }
-    this._tetromino.autofall=function(){
-        this.set_autofall()
-        if(this.transfer(0,-1,0))
-            this.drop()
+    this._tetromino.autofall=()=>{
+        this._tetromino.set_autofall()
+        if(this._game.transfer(0,-1,0))
+            this._game.drop()
     }
-    this._tetromino.set_autofall=function(){
-        this.id_timeout_autofall=setTimeout(
-            ()=>{this.autofall()},
-            this.time_ms__autofall
+    this._tetromino.set_autofall=()=>{
+        this._tetromino.id_timeout_autofall=setTimeout(
+            ()=>{this._tetromino.autofall()},
+            this._tetromino.time_ms__autofall
         )
     }
-    this._tetromino.unset_autofall=function(){
-        clearTimeout(this.id_timeout_autofall)
+    this._tetromino.unset_autofall=()=>{
+        clearTimeout(this._tetromino.id_timeout_autofall)
     }
-    this._tetromino.reset_autofall=function(){
-        this.unset_autofall()
-        this.set_autofall()
+    this._tetromino.reset_autofall=()=>{
+        this._tetromino.unset_autofall()
+        this._tetromino.set_autofall()
     }
     this._tetromino.set_autofall()
     this.ui=doe.canvas({
@@ -163,20 +153,22 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
             color[this._game.board.array[x][y]]
         this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
-    let p=this._shadowPosition()
-    this._drawTetrominoShapeAt(
-        atX+17*p[0],
-        atY+17*(20-(p[1]+this._tetromino.prototype.size)),
-        this._tetromino.prototype.id,
-        this._tetromino.direction,
-        'gray'
-    )
-    this._drawTetrominoAt(
-        atX+17*this._tetromino.x,
-        atY+17*(20-(this._tetromino.y+this._tetromino.prototype.size)),
-        this._tetromino.prototype.id,
-        this._tetromino.direction
-    )
+    if(this._game.status.current){
+        let p=this._shadowPosition()
+        this._drawTetrominoShapeAt(
+            atX+17*p[0],
+            atY+17*(20-(p[1]+constant.shape[this._game.status.current.type][0].length)),
+            this._game.status.current.type,
+            this._game.status.current.direction,
+            'gray'
+        )
+        this._drawTetrominoAt(
+            atX+17*this._game.status.current.x,
+            atY+17*(20-(this._game.status.current.y+constant.shape[this._game.status.current.type][0].length)),
+            this._game.status.current.type,
+            this._game.status.current.direction
+        )
+    }
 }
 Tetris.prototype._drawTetrominoAt=function(atX,atY,id,direction=0){
     this._drawTetrominoShapeAt(atX,atY,id,direction,color[id])
@@ -191,9 +183,9 @@ Tetris.prototype._drawTetrominoShapeAt=function(atX,atY,id,direction,color){
 }
 Tetris.prototype._shadowPosition=function(){
     let delta_y__shadow=0
-    while(this._tetromino.valid_transfer(0,delta_y__shadow-1,0))
+    while(this._game.valid_transfer(0,delta_y__shadow-1,0))
         delta_y__shadow--
-    return[this._tetromino.x,this._tetromino.y+delta_y__shadow]
+    return[this._game.status.current.x,this._game.status.current.y+delta_y__shadow]
 }
 Tetris.prototype.start=function(){
     this._start=~~performance.now()
