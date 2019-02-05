@@ -1,5 +1,4 @@
 import Board from                   './Tetris/Board.mjs'
-import BoardHold from               './Tetris/BoardHold.js'
 import BoardNext from               './Tetris/BoardNext.js'
 import Tetromino from               './Tetris/Tetromino.js'
 import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
@@ -49,7 +48,6 @@ function Tetris(){
         }
         return 1
     }
-    this._board_hold=new BoardHold(this._tetromino)
     this._board_next=new BoardNext(
         this._tetromino,
         this._queue_prototype_tetrominoes
@@ -62,7 +60,6 @@ function Tetris(){
         },
     }
     this._queue_prototype_tetrominoes.pop()
-    this._board_hold.update_html()
     this._board_next.update_html()
     this._tetromino.update_html()
     this._tetromino.set_autofall()
@@ -77,7 +74,6 @@ function Tetris(){
             })},
             this._tetromino.view
         ),
-        this._board_hold.view,
         this._board_next.view,
     )
     this._nodeCache.context=this._node.canvas.getContext('2d')
@@ -98,6 +94,15 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
         this._nodeCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
 }
+Tetris.prototype._drawTetrominoAt=function(atX,atY,prototype){
+    for(var r=0;r<prototype.size;r++)
+    for(var c=0;c<prototype.size;c++)
+    if(prototype.array[0][r][c]){
+        this._nodeCache.context.fillStyle=
+            prototype.color||'black'
+        this._nodeCache.context.fillRect(atX+17*c,atY+17*r,16,16)
+    }
+}
 Tetris.prototype.start=function(){
     this._start=~~performance.now()
     this._game.start()
@@ -109,6 +114,8 @@ Tetris.prototype.install=function(){
         this._nodeCache.context.fillStyle='darkgray'
         this._nodeCache.context.fillRect(0,0,640,480)
         this._drawBoardAt(160,80)
+        if(this._game.status.hold!=undefined)
+            this._drawTetrominoAt(80,80,this._game.status.hold)
     }
     this._installation.animationFrameRequest=
         requestAnimationFrame(processAnimationFrame)

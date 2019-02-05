@@ -27,9 +27,17 @@ export default function(){
                 this._tetromino.softdrop()
         }
         if(this.keys[67]){    // c: hold
-            if(this.times_key[67]%8==0)
-                this._board_hold.hold()
-            this._board_hold.update_html()
+            if(this.times_key[67]%8==0){
+                if(typeof this._game.status.hold=='undefined'){
+                    this._game.status.hold=this._tetromino.prototype
+                    this._tetromino.become_next()
+                }else{
+                    let temp=this._game.status.hold
+                    this._game.status.hold=this._tetromino.prototype
+                    this._tetromino.prototype=temp
+                }
+                this._tetromino.return_source()
+            }
         }
         if(this.keys[88]){    // x: 順時鐘轉
             if(this.times_key[88]%8==0)
