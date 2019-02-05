@@ -1,4 +1,3 @@
-import prototype_tetrominoes from './prototype_tetrominoes.js'
 export default function(){
     this.keys={}
     this.times_key={}
@@ -29,15 +28,7 @@ export default function(){
         }
         if(this.keys[67]){    // c: hold
             if(this.times_key[67]%8==0){
-                if(typeof this._game.status.hold=='undefined'){
-                    this._game.status.hold=this._tetromino.prototype.id
-                    this._tetromino.become_next()
-                }else{
-                    let temp=prototype_tetrominoes[this._game.status.hold]
-                    this._game.status.hold=this._tetromino.prototype.id
-                    this._tetromino.prototype=temp
-                }
-                this._tetromino.return_source()
+                this._game.hold()
             }
         }
         if(this.keys[88]){    // x: 順時鐘轉
