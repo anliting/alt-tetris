@@ -1,7 +1,9 @@
+import Board from                   './Game/Board.mjs'
 function Game(){
     this.status={
         godChoice:[0,0,0,0,0,0,0],
     }
+    this.board=new Board
 }
 Game.prototype.start=function(){
     this.god.getNext(this.status.godChoice)

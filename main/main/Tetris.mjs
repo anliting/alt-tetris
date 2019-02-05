@@ -1,4 +1,3 @@
-import Board from                   './Tetris/Board.mjs'
 import Tetromino from               './Tetris/Tetromino.js'
 import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
@@ -35,20 +34,23 @@ function Tetris(){
         },
     }
     this._uiCache={}
-    this._board=new Board
     this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
     this._tetromino=new Tetromino(
         this._queue_prototype_tetrominoes.access(0),
         this._queue_prototype_tetrominoes
     )
+    this._tetromino.become_next=()=>{
+        this._tetromino.prototype=this._queue_prototype_tetrominoes.access(0)
+        this._queue_prototype_tetrominoes.pop()
+    }
     this._tetromino.drop=()=>{
-        this._board.put(
+        this._game.board.put(
             this._tetromino.prototype.id,
             this._tetromino.direction,
             this._tetromino.x,
             this._tetromino.y,
         )
-        setTimeout(()=>{this._board.update()},200)
+        setTimeout(()=>{this._game.board.update()},200)
         this._tetromino.become_next()
         this._tetromino.return_source()
     }
@@ -64,7 +66,7 @@ function Tetris(){
             let y=this._tetromino.y+dy+n-1-r
             if(!(
                 0<=x&&x<10&&0<=y&&y<24&&
-                this._board.array[x][y]==undefined
+                this._game.board.array[x][y]==undefined
             ))
                 return 0
         }
@@ -84,11 +86,11 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
     for(let x=0;x<10;x++)
     for(let y=0;y<20;y++){
         this._uiCache.context.fillStyle=
-            this._board.array[x][y]==undefined
+            this._game.board.array[x][y]==undefined
         ?
             'black'
         :
-            color[this._board.array[x][y]]
+            color[this._game.board.array[x][y]]
         this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
     let p=this._shadowPosition()

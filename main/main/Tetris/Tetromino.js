@@ -1,16 +1,11 @@
-function Tetromino(prototype,queue_prototype_tetrominoes){
+function Tetromino(prototype){
     this._node={}
     this.prototype=prototype
-    this.queue_prototype_tetrominoes=queue_prototype_tetrominoes
     this.direction=0
     this.x=5+Math.floor(-this.prototype.size/2)
     this.y=20+this.prototype.y_initial__relative
     this.time_ms__autofall=1000
     this.id_timeout_autofall
-}
-Tetromino.prototype.become_next=function(){
-    this.prototype=this.queue_prototype_tetrominoes.access(0)
-    this.queue_prototype_tetrominoes.pop()
 }
 Tetromino.prototype.return_source=function(){
     this.direction=0

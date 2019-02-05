@@ -1,4 +1,4 @@
-import constant from '../constant.mjs'
+import constant from '../../constant.mjs'
 function Board(){
     this.array=[...Array(10)].map(_=>[])
 }
