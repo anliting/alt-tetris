@@ -5,36 +5,9 @@ import BoardNext from               './Tetris/BoardNext.js'
 import Tetromino from               './Tetris/Tetromino.js'
 import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
+import Game from                    './Tetris/Game.mjs'
+import God from                     './Tetris/God.mjs'
 import doe from                     '../../lib/doe.mjs'
-function Game(){
-    this.status={
-        godChoice:[0,0,0,0,0,0,0],
-    }
-}
-Game.prototype.start=function(){
-    this.god.getNext(this.status.godChoice)
-}
-Game.prototype.setNext=function(next){
-    if(this.status.current==undefined){
-        this.status.current=next
-    }else
-        this.status.next=next
-    this.status.godChoice[next]=1
-    if(this.status.godChoice.reduce((a,b)=>a+b)==7)
-        this.status.godChoice=[0,0,0,0,0,0,0]
-    if(this.status.next==undefined)
-        this.god.getNext(this.status.godChoice)
-}
-function God(){
-}
-God.prototype.getNext=function(choice){
-    let a=~~(Math.random()*(7-choice.reduce((a,b)=>a+b)))
-    for(let i=0;i<7;i++)
-        if(choice[i])
-            a++
-        else if(i==a)
-            this.game.setNext(i)
-}
 function Tetris(){
     this._game=new Game
     this._game.god={
@@ -58,6 +31,7 @@ function Tetris(){
     )
     this._tetromino.drop=()=>{
         this._board.insert(this._tetromino)
+        setTimeout(()=>{this._board.update()},200)
         this._tetromino.become_next()
         this._tetromino.return_source()
     }
