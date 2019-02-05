@@ -16,6 +16,12 @@ let color=[
     '#FF0000',  // Standard Red
 ]
 function Tetris(){
+    this._uiDrawStatistics={
+        history:[],
+        start:performance.now(),
+        frameCount:0,
+        frameTime:0,
+    }
     this._game=new Game
     this._game.god={
         getNext:choice=>{
@@ -47,12 +53,15 @@ function Tetris(){
         this._tetromino.return_source()
     }
     this._tetromino.valid_transfer=(dx,dy,dd)=>{
-        let direction_new=((this._tetromino.direction+dd)%4+4)%4
-        for(let r=0;r<this._tetromino.prototype.size;r++)
-        for(let c=0;c<this._tetromino.prototype.size;c++)
-        if(constant.shape[this._tetromino.prototype.id][direction_new][r][c]){
+        let
+            direction_new=((this._tetromino.direction+dd)%4+4)%4,
+            shape=constant.shape[this._tetromino.prototype.id][direction_new],
+            n=shape.length
+        for(let r=0;r<n;r++)
+        for(let c=0;c<n;c++)
+        if(shape[r][c]){
             let x=this._tetromino.x+dx+c
-            let y=this._tetromino.y+dy+this._tetromino.prototype.size-1-r
+            let y=this._tetromino.y+dy+n-1-r
             if(!(
                 0<=x&&x<10&&0<=y&&y<24&&
                 this._board.array[x][y]==undefined
@@ -120,6 +129,7 @@ Tetris.prototype.start=function(){
 }
 Tetris.prototype.install=function(){
     let processAnimationFrame=()=>{
+        let frameStart=performance.now()
         this._installation.animationFrameRequest=
             requestAnimationFrame(processAnimationFrame)
         this._uiCache.context.fillStyle='darkgray'
@@ -130,6 +140,21 @@ Tetris.prototype.install=function(){
         )
         if(this._game.status.hold!=undefined)
             this._drawTetrominoAt(80,80,this._game.status.hold)
+        let frameTime=performance.now()-frameStart
+        if(1e3<=frameStart-this._uiDrawStatistics.start){
+            this._uiDrawStatistics.history.push({
+                start:          frameStart,
+                frameCount:     this._uiDrawStatistics.frameCount,
+                frameTime:      this._uiDrawStatistics.frameTime,
+            })
+            Object.assign(this._uiDrawStatistics,{
+                start:frameStart,
+                frameCount:0,
+                frameTime:0,
+            })
+        }
+        this._uiDrawStatistics.frameCount++
+        this._uiDrawStatistics.frameTime+=frameTime
     }
     this._installation.animationFrameRequest=
         requestAnimationFrame(processAnimationFrame)
