@@ -28,8 +28,7 @@ function Tetris(){
             this._game.setNext(next)
         },
     }
-    this._node={}
-    this._nodeCache={}
+    this._uiCache={}
     this._board=new Board
     this._queue_prototype_tetrominoes=new QueuePrototypeTetromino
     this._tetromino=new Tetromino(
@@ -65,33 +64,20 @@ function Tetris(){
     }
     this._queue_prototype_tetrominoes.pop()
     this._tetromino.set_autofall()
-    this.ui=doe.div(
-        {className:'tetris',tabIndex:-1},
-        this._node.canvas=doe.canvas({width:640,height:480}),
-        doe.div(
-            n=>{doe(n.style,{
-                position:'absolute',
-                left:'160px',
-                top:'80px',
-            })},
-        ),
-    )
-    this._nodeCache.context=this._node.canvas.getContext('2d')
+    this.ui=doe.canvas({
+        className:'tetris',tabIndex:-1,width:640,height:480
+    })
+    this._uiCache.context=this.ui.getContext('2d')
     listenToKeys.call(this)
     this._installation={}
 }
-Tetris.style=`
-    .tetris{
-        width:640px;
-        height:480px;
-    }
-`
+Tetris.style=``
 Tetris.prototype._drawBoardAt=function(atX,atY){
     for(let x=0;x<10;x++)
     for(let y=0;y<20;y++){
-        this._nodeCache.context.fillStyle=
+        this._uiCache.context.fillStyle=
             this._board.array[x][y]||'black'
-        this._nodeCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
+        this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
     this._drawTetrominoAt(
         atX+17*this._tetromino.x,
@@ -112,12 +98,12 @@ Tetris.prototype._drawTetrominoAt=function(atX,atY,id,direction=0){
     this._drawTetrominoShapeAt(atX,atY,id,direction,color[id])
 }
 Tetris.prototype._drawTetrominoShapeAt=function(atX,atY,id,direction,color){
-    this._nodeCache.context.fillStyle=color
+    this._uiCache.context.fillStyle=color
     let
         shape=constant.shape[id][direction],
         n=shape.length
     for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(shape[r][c])
-        this._nodeCache.context.fillRect(atX+17*c,atY+17*r,16,16)
+        this._uiCache.context.fillRect(atX+17*c,atY+17*r,16,16)
 }
 Tetris.prototype._shadowPosition=function(){
     let delta_y__shadow=0
@@ -133,8 +119,8 @@ Tetris.prototype.install=function(){
     let processAnimationFrame=()=>{
         this._installation.animationFrameRequest=
             requestAnimationFrame(processAnimationFrame)
-        this._nodeCache.context.fillStyle='darkgray'
-        this._nodeCache.context.fillRect(0,0,640,480)
+        this._uiCache.context.fillStyle='darkgray'
+        this._uiCache.context.fillRect(0,0,640,480)
         this._drawBoardAt(160,80)
         this._drawTetrominoAt(400,80,
             this._queue_prototype_tetrominoes.access(0).id

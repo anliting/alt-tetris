@@ -21,11 +21,7 @@ doe.head(
             line-height:0;
         }
         body>div>*>*{
-            display:inline-block;
-            position:relative;
             line-height:1;
-        }
-        body>div>*>*>*{
             outline:none;
         }
         ${Tetris.style}
@@ -33,7 +29,7 @@ doe.head(
 )
 let tetris=new Tetris
 tetris.install()
-doe.body(doe.div(doe.div(doe.div(tetris.ui))))
+doe.body(doe.div(doe.div(tetris.ui)))
 tetris.ui.focus()
 // hacker access
 window.tetris=tetris
