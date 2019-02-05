@@ -12,7 +12,7 @@ Board.prototype.update=function(){
     for(let y=0;y<24;y++){
         let isfull=1
         for(let x=0;x<10;x++)
-            isfull=isfull&&this.array[x][y]
+            isfull=isfull&&(this.array[x][y]!=undefined)
         if(!isfull){
             for(let x=0;x<10;x++)
                 this.array[x][y_new]=this.array[x][y]
