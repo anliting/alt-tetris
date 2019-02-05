@@ -8,10 +8,7 @@ function QueuePrototypeTetromino(){
         arrange_random(this.queue,this.queue.length-7,this.queue.length)
     }
     this.pop=function(){
-        let resolve
-        this.out.pop(new Promise(rs=>resolve=rs))
         this.queue.shift()
-        resolve()
     }
     this.access=function(k){
         while(!(k<this.queue.length))

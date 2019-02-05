@@ -61,12 +61,6 @@ function Tetris(){
         }
         return 1
     }
-    this._queue_prototype_tetrominoes.out={
-        pop:ev=>{
-            ev.then(()=>{
-            })
-        },
-    }
     this._queue_prototype_tetrominoes.pop()
     this._tetromino.set_autofall()
     this.ui=doe.canvas({
