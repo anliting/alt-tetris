@@ -64,7 +64,6 @@ function Tetris(){
         },
     }
     this._queue_prototype_tetrominoes.pop()
-    this._tetromino.update_html()
     this._tetromino.set_autofall()
     this.ui=doe.div(
         {className:'tetris',tabIndex:-1},
@@ -75,7 +74,6 @@ function Tetris(){
                 left:'160px',
                 top:'80px',
             })},
-            this._tetromino.view
         ),
     )
     this._nodeCache.context=this._node.canvas.getContext('2d')
@@ -95,15 +93,37 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
             this._board.array[x][y]||'black'
         this._nodeCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
+    this._drawTetrominoAt(
+        atX+17*this._tetromino.x,
+        atY+17*(20-(this._tetromino.y+this._tetromino.prototype.size)),
+        this._tetromino.prototype.id,
+        this._tetromino.direction
+    )
+    let p=this._shadowPosition()
+    this._drawTetrominoShapeAt(
+        atX+17*p[0],
+        atY+17*(20-(p[1]+this._tetromino.prototype.size)),
+        this._tetromino.prototype.id,
+        this._tetromino.direction,
+        'gray'
+    )
 }
-Tetris.prototype._drawTetrominoAt=function(atX,atY,id){
-    let n=constant.shape[id][0].length
-    for(var r=0;r<n;r++)
-    for(var c=0;c<n;c++)
-    if(constant.shape[id][0][r][c]){
-        this._nodeCache.context.fillStyle=color[id]||'black'
+Tetris.prototype._drawTetrominoAt=function(atX,atY,id,direction=0){
+    this._drawTetrominoShapeAt(atX,atY,id,direction,color[id])
+}
+Tetris.prototype._drawTetrominoShapeAt=function(atX,atY,id,direction,color){
+    this._nodeCache.context.fillStyle=color
+    let
+        shape=constant.shape[id][direction],
+        n=shape.length
+    for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(shape[r][c])
         this._nodeCache.context.fillRect(atX+17*c,atY+17*r,16,16)
-    }
+}
+Tetris.prototype._shadowPosition=function(){
+    let delta_y__shadow=0
+    while(this._tetromino.valid_transfer(0,delta_y__shadow-1,0))
+        delta_y__shadow--
+    return[this._tetromino.x,this._tetromino.y+delta_y__shadow]
 }
 Tetris.prototype.start=function(){
     this._start=~~performance.now()

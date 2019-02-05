@@ -1,6 +1,3 @@
-import prototype_tetrominoes from './prototype_tetrominoes.js'
-import update_html from './Tetromino/Tetromino.prototype.update_html.js'
-import prototypeViewGet from './Tetromino/Tetromino.prototype.view.get.js'
 function Tetromino(prototype,queue_prototype_tetrominoes){
     this._node={}
     this.prototype=prototype
@@ -10,7 +7,6 @@ function Tetromino(prototype,queue_prototype_tetrominoes){
     this.y=20+this.prototype.y_initial__relative
     this.time_ms__autofall=1000
     this.id_timeout_autofall
-    this.view=prototypeViewGet.call(this)
 }
 Tetromino.prototype.become_next=function(){
     this.prototype=this.queue_prototype_tetrominoes.access(0)
@@ -20,7 +16,6 @@ Tetromino.prototype.return_source=function(){
     this.direction=0
     this.x=5+Math.floor(-this.prototype.size/2)
     this.y=20+this.prototype.y_initial__relative
-    this.update_html()
 }
 Tetromino.prototype.transfer=function(dx,dy,dd){
     if(!this.valid_transfer(dx,dy,dd))
@@ -60,12 +55,10 @@ Tetromino.prototype.harddrop=function(){
     while(this.transfer(0,-1,0)==0);
     this.drop()
 }
-Tetromino.prototype.update_html=update_html
 Tetromino.prototype.autofall=function(){
     this.set_autofall()
     if(this.transfer(0,-1,0))
         this.drop()
-    this.update_html()
 }
 Tetromino.prototype.set_autofall=function(){
     this.id_timeout_autofall=setTimeout(

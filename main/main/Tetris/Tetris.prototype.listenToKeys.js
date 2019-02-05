@@ -51,7 +51,6 @@ export default function(){
         for(let i=0;i<128;i++)
             if(this.keys[i])
                 this.times_key[i]++
-        this._tetromino.update_html()
     }
     keyevents()
     this.ui.addEventListener('keydown',event=>{
