@@ -1,4 +1,3 @@
-import Status from                  './Tetris/Status.mjs'
 import Board from                   './Tetris/Board.mjs'
 import BoardHold from               './Tetris/BoardHold.js'
 import BoardNext from               './Tetris/BoardNext.js'
@@ -55,7 +54,6 @@ function Tetris(){
         this._tetromino,
         this._queue_prototype_tetrominoes
     )
-    this._status_game=new Status(this._tetromino)
     this._queue_prototype_tetrominoes.out={
         pop:ev=>{
             ev.then(()=>{
@@ -81,7 +79,6 @@ function Tetris(){
         ),
         this._board_hold.view,
         this._board_next.view,
-        this._status_game.view,
     )
     this._nodeCache.context=this._node.canvas.getContext('2d')
     listenToKeys.call(this)
