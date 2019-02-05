@@ -14,12 +14,6 @@ let color=[
     '#FF0000',  // Standard Red
 ]
 function Tetris(){
-    this._uiDrawStatistics={
-        history:[],
-        start:performance.now(),
-        frameCount:0,
-        frameTime:0,
-    }
     this._game=new Game
     this._game.god={
         getNext:choice=>{
@@ -138,6 +132,12 @@ Tetris.prototype.start=function(){
     this._game.start()
 }
 Tetris.prototype.install=function(){
+    this._uiPerformanceStatistics={
+        history:[],
+        start:performance.now(),
+        frameCount:0,
+        frameTime:0,
+    }
     let processAnimationFrame=()=>{
         let frameStart=performance.now()
         this._installation.animationFrameRequest=
@@ -150,20 +150,20 @@ Tetris.prototype.install=function(){
         if(this._game.status.hold!=undefined)
             this._drawTetrominoAt(80,80,this._game.status.hold)
         let frameTime=performance.now()-frameStart
-        if(1e3<=frameStart-this._uiDrawStatistics.start){
-            this._uiDrawStatistics.history.push({
+        if(1e3<=frameStart-this._uiPerformanceStatistics.start){
+            this._uiPerformanceStatistics.history.push({
                 start:          frameStart,
-                frameCount:     this._uiDrawStatistics.frameCount,
-                frameTime:      this._uiDrawStatistics.frameTime,
+                frameCount:     this._uiPerformanceStatistics.frameCount,
+                frameTime:      this._uiPerformanceStatistics.frameTime,
             })
-            Object.assign(this._uiDrawStatistics,{
+            Object.assign(this._uiPerformanceStatistics,{
                 start:frameStart,
                 frameCount:0,
                 frameTime:0,
             })
         }
-        this._uiDrawStatistics.frameCount++
-        this._uiDrawStatistics.frameTime+=frameTime
+        this._uiPerformanceStatistics.frameCount++
+        this._uiPerformanceStatistics.frameTime+=frameTime
     }
     this._installation.animationFrameRequest=
         requestAnimationFrame(processAnimationFrame)
