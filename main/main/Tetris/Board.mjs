@@ -1,14 +1,11 @@
+import constant from '../constant.mjs'
 function Board(){
     this.array=[...Array(10)].map(_=>[])
 }
-Board.prototype.insert=function(tetromino){
-    for(let r=0;r<tetromino.prototype.size;r++)
-    for(let c=0;c<tetromino.prototype.size;c++)
-    if(tetromino.prototype.array[tetromino.direction][r][c])
-        this.array[tetromino.x+c][
-            tetromino.y+(tetromino.prototype.size-1-r)
-        ]=
-            tetromino.prototype.color
+Board.prototype.put=function(id,direction,x,y){
+    let shape=constant.shape[id][direction],n=shape.length
+    for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(shape[r][c])
+        this.array[x+c][y+(n-1-r)]=id
 }
 Board.prototype.update=function(){
     let y_new=0

@@ -36,7 +36,12 @@ function Tetris(){
         this._queue_prototype_tetrominoes
     )
     this._tetromino.drop=()=>{
-        this._board.insert(this._tetromino)
+        this._board.put(
+            this._tetromino.prototype.id,
+            this._tetromino.direction,
+            this._tetromino.x,
+            this._tetromino.y,
+        )
         setTimeout(()=>{this._board.update()},200)
         this._tetromino.become_next()
         this._tetromino.return_source()
@@ -45,12 +50,12 @@ function Tetris(){
         let direction_new=((this._tetromino.direction+dd)%4+4)%4
         for(let r=0;r<this._tetromino.prototype.size;r++)
         for(let c=0;c<this._tetromino.prototype.size;c++)
-        if(this._tetromino.prototype.array[direction_new][r][c]){
+        if(constant.shape[this._tetromino.prototype.id][direction_new][r][c]){
             let x=this._tetromino.x+dx+c
             let y=this._tetromino.y+dy+this._tetromino.prototype.size-1-r
             if(!(
                 0<=x&&x<10&&0<=y&&y<24&&
-                !this._board.array[x][y]
+                this._board.array[x][y]==undefined
             ))
                 return 0
         }
@@ -76,7 +81,11 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
     for(let x=0;x<10;x++)
     for(let y=0;y<20;y++){
         this._uiCache.context.fillStyle=
-            this._board.array[x][y]||'black'
+            this._board.array[x][y]==undefined
+        ?
+            'black'
+        :
+            color[this._board.array[x][y]]
         this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
     this._drawTetrominoAt(
