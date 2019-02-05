@@ -37,19 +37,17 @@ Tetromino.prototype.rotate=function(mode){
      *      otherwise return 5.
      */
     let dd=mode==0?-1:1
-    for(let i=0;i<5;i++){
+    for(let i=0;i<5;i++)
         if(this.transfer(
             this.prototype.wallkickdata[
                 2*this.direction+mode
-            ][i].x,
+            ][i][0],
             this.prototype.wallkickdata[
                 2*this.direction+mode
-            ][i].y,
+            ][i][1],
             dd
-        )==0){
+        )==0)
             return i
-        }
-    }
     return 5
 }
 Tetromino.prototype.softdrop=function(){
