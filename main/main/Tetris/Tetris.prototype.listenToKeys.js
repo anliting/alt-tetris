@@ -16,7 +16,7 @@ export default function(){
         }
         if(this.keys[38]){    // up arrow: 順時鐘轉
             if(this.times_key[38]%8==0)
-                this._tetromino.rotate(1)
+                this._game.rotate(1)
         }
         if(this.keys[39]){    // right arrow
             if(this.times_key[39]%4==0)
@@ -33,11 +33,11 @@ export default function(){
         }
         if(this.keys[88]){    // x: 順時鐘轉
             if(this.times_key[88]%8==0)
-                this._tetromino.rotate(1)
+                this._game.rotate(1)
         }
         if(this.keys[90]){    // z: 逆時鐘轉
             if(this.times_key[90]%8==0)
-                this._tetromino.rotate(0)
+                this._game.rotate(0)
         }
         for(let i=0;i<128;i++)
             if(this.keys[i])
