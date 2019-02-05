@@ -1,5 +1,4 @@
 import Board from                   './Tetris/Board.mjs'
-import BoardNext from               './Tetris/BoardNext.js'
 import Tetromino from               './Tetris/Tetromino.js'
 import QueuePrototypeTetromino from './Tetris/QueuePrototypeTetromino.js'
 import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
@@ -8,13 +7,13 @@ import God from                     './Tetris/God.mjs'
 import doe from                     '../../lib/doe.mjs'
 import constant from                './constant.mjs'
 let color=[
-    '#00FFFF',  //Aqua
-    '#0000FF',  //Standard Blue
-    '#FFA500',  //Standard Orange
-    '#FFFF00',  //Standard Yellow
-    '#00FF00',  //Standard Lime
-    '#800080',  //Standard Purple
-    '#FF0000',  //Standard Red
+    '#00FFFF',  // Aqua
+    '#0000FF',  // Standard Blue
+    '#FFA500',  // Standard Orange
+    '#FFFF00',  // Standard Yellow
+    '#00FF00',  // Standard Lime
+    '#800080',  // Standard Purple
+    '#FF0000',  // Standard Red
 ]
 function Tetris(){
     this._game=new Game
@@ -58,19 +57,13 @@ function Tetris(){
         }
         return 1
     }
-    this._board_next=new BoardNext(
-        this._tetromino,
-        this._queue_prototype_tetrominoes
-    )
     this._queue_prototype_tetrominoes.out={
         pop:ev=>{
             ev.then(()=>{
-                this._board_next.update_html()
             })
         },
     }
     this._queue_prototype_tetrominoes.pop()
-    this._board_next.update_html()
     this._tetromino.update_html()
     this._tetromino.set_autofall()
     this.ui=doe.div(
@@ -84,7 +77,6 @@ function Tetris(){
             })},
             this._tetromino.view
         ),
-        this._board_next.view,
     )
     this._nodeCache.context=this._node.canvas.getContext('2d')
     listenToKeys.call(this)
@@ -124,6 +116,9 @@ Tetris.prototype.install=function(){
         this._nodeCache.context.fillStyle='darkgray'
         this._nodeCache.context.fillRect(0,0,640,480)
         this._drawBoardAt(160,80)
+        this._drawTetrominoAt(400,80,
+            this._queue_prototype_tetrominoes.access(0).id
+        )
         if(this._game.status.hold!=undefined)
             this._drawTetrominoAt(80,80,this._game.status.hold)
     }
