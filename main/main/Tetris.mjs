@@ -91,12 +91,6 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
             color[this._board.array[x][y]]
         this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
-    this._drawTetrominoAt(
-        atX+17*this._tetromino.x,
-        atY+17*(20-(this._tetromino.y+this._tetromino.prototype.size)),
-        this._tetromino.prototype.id,
-        this._tetromino.direction
-    )
     let p=this._shadowPosition()
     this._drawTetrominoShapeAt(
         atX+17*p[0],
@@ -104,6 +98,12 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
         this._tetromino.prototype.id,
         this._tetromino.direction,
         'gray'
+    )
+    this._drawTetrominoAt(
+        atX+17*this._tetromino.x,
+        atY+17*(20-(this._tetromino.y+this._tetromino.prototype.size)),
+        this._tetromino.prototype.id,
+        this._tetromino.direction
     )
 }
 Tetris.prototype._drawTetrominoAt=function(atX,atY,id,direction=0){
