@@ -10,5 +10,4 @@ export default function(){
             y_new++
         }
     }
-    this.update_html()
 }

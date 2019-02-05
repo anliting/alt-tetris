@@ -1,7 +1,6 @@
 import doe from             '../../../lib/doe.mjs'
 import insert from          './Board/Board.prototype.insert.js'
 import update from          './Board/Board.prototype.update.js'
-import update_html from     './Board/Board.prototype.update_html.js'
 function Board(){
     this.array=Array(10)
     for(let x=0;x<10;x++){
@@ -25,5 +24,4 @@ function Board(){
 }
 Board.prototype.insert=insert
 Board.prototype.update=update
-Board.prototype.update_html=update_html
 export default Board
