@@ -6,6 +6,16 @@ import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
 import Game from                    './Tetris/Game.mjs'
 import God from                     './Tetris/God.mjs'
 import doe from                     '../../lib/doe.mjs'
+import constant from                './constant.mjs'
+let color=[
+    '#00FFFF',  //Aqua
+    '#0000FF',  //Standard Blue
+    '#FFA500',  //Standard Orange
+    '#FFFF00',  //Standard Yellow
+    '#00FF00',  //Standard Lime
+    '#800080',  //Standard Purple
+    '#FF0000',  //Standard Red
+]
 function Tetris(){
     this._game=new Game
     this._game.god={
@@ -94,12 +104,12 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
         this._nodeCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
 }
-Tetris.prototype._drawTetrominoAt=function(atX,atY,prototype){
-    for(var r=0;r<prototype.size;r++)
-    for(var c=0;c<prototype.size;c++)
-    if(prototype.array[0][r][c]){
-        this._nodeCache.context.fillStyle=
-            prototype.color||'black'
+Tetris.prototype._drawTetrominoAt=function(atX,atY,id){
+    let n=constant.shape[id][0].length
+    for(var r=0;r<n;r++)
+    for(var c=0;c<n;c++)
+    if(constant.shape[id][0][r][c]){
+        this._nodeCache.context.fillStyle=color[id]||'black'
         this._nodeCache.context.fillRect(atX+17*c,atY+17*r,16,16)
     }
 }
