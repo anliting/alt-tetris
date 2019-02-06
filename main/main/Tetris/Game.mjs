@@ -42,9 +42,7 @@ Game.prototype.drop=function(){
         this.status.current.x,
         this.status.current.y,
     )
-    setTimeout(()=>{
-        this.board.update()
-    },200)
+    this.board.update()
     this.getCurrent()
 }
 Game.prototype.valid_transfer=function(dx,dy,dd){
