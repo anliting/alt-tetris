@@ -29,9 +29,9 @@ Game.prototype._setNext=function(next){
 }
 Game.prototype.in=function(event){
     this._history.push(event)
-    switch(event[0]){
+    switch(event[1]){
         case'setNext':
-            this._setNext(event[1])
+            this._setNext(event[2])
             break
     }
 }

@@ -21,7 +21,7 @@ function Tetris(){
     this._god=new God
     this._god.game={
         setNext:next=>{
-            this._game.in(['setNext',next])
+            this._inGame(['setNext',next])
         },
     }
     this._uiCache={}
@@ -93,6 +93,9 @@ function Tetris(){
     this._installation={}
 }
 Tetris.style=``
+Tetris.prototype._inGame=function(a){
+    this._game.in([~~performance.now()-this._start,...a])
+}
 Tetris.prototype._drawBoardAt=function(atX,atY){
     for(let x=0;x<10;x++)
     for(let y=0;y<20;y++){
