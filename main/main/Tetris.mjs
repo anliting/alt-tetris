@@ -63,27 +63,14 @@ function Tetris(){
                 case'ArrowLeft':
                     this._game.transfer(-1,0,0)
                     break
-                case'ArrowUp':
-                    this._game.rotate(1)
-                    break
                 case'ArrowRight':
                     this._game.transfer(1,0,0)
                     break
                 case'ArrowDown':
                     this._tetromino.softdrop()
                     break
-                case'C':
-                case'c':
-                    this._game.hold()
-                    break
-                case'X':
-                case'x':
-                    this._game.rotate(1)
-                    break
-                case'Z':
-                case'z':
-                    this._game.rotate(0)
-                    break
+                default:
+                    this._inGame(['key',event.key])
             }
         },
         onkeyup:event=>{
