@@ -55,7 +55,6 @@ Game.prototype._rotate=function(mode){
     return 5
 }
 Game.prototype.in=function(event){
-console.log(event)
     this._history.push(event)
     switch(event[1]){
         case'setNext':
@@ -78,6 +77,8 @@ console.log(event)
                 break
             }
     }
+}
+Game.prototype.to=function(t){
 }
 Game.prototype.drop=function(){
     this.board.put(

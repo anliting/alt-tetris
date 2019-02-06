@@ -146,8 +146,7 @@ Tetris.prototype.install=function(){
     }
     let processAnimationFrame=()=>{
         let frameStart=performance.now()
-        this._installation.animationFrameRequest=
-            requestAnimationFrame(processAnimationFrame)
+        this._game.to(~~frameStart-this._start)
         this._uiCache.context.fillStyle='darkgray'
         this._uiCache.context.fillRect(0,0,640,480)
         this._drawBoardAt(160,80)
@@ -170,6 +169,8 @@ Tetris.prototype.install=function(){
         }
         this._uiPerformanceStatistics.frameCount++
         this._uiPerformanceStatistics.frameTime+=frameTime
+        this._installation.animationFrameRequest=
+            requestAnimationFrame(processAnimationFrame)
     }
     this._installation.animationFrameRequest=
         requestAnimationFrame(processAnimationFrame)
