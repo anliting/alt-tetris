@@ -16,10 +16,7 @@ Game.prototype._setCurrent=function(type){
         y:20+initialY[type],
     }
 }
-Game.prototype.in=function(event){
-    this._history.push(event)
-}
-Game.prototype.setNext=function(next){
+Game.prototype._setNext=function(next){
     if(this.status.current==undefined)
         this._setCurrent(next)
     else
@@ -30,6 +27,14 @@ Game.prototype.setNext=function(next){
     if(this.status.next==undefined)
         this.god.getNext(this.status.godChoice)
 }
+Game.prototype.in=function(event){
+    this._history.push(event)
+    switch(event[0]){
+        case'setNext':
+            this._setNext(event[1])
+            break
+    }
+}
 Game.prototype.drop=function(){
     this.board.put(
         this.status.current.type,
@@ -37,7 +42,9 @@ Game.prototype.drop=function(){
         this.status.current.x,
         this.status.current.y,
     )
-    setTimeout(()=>{this.board.update()},200)
+    setTimeout(()=>{
+        this.board.update()
+    },200)
     this.getCurrent()
 }
 Game.prototype.valid_transfer=function(dx,dy,dd){

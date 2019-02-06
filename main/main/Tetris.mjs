@@ -1,7 +1,6 @@
-import listenToKeys from            './Tetris/Tetris.prototype.listenToKeys.js'
+import doe from                     '../../lib/doe.mjs'
 import Game from                    './Tetris/Game.mjs'
 import God from                     './Tetris/God.mjs'
-import doe from                     '../../lib/doe.mjs'
 import constant from                './Tetris/constant.mjs'
 let color=[
     '#00FFFF',  // Aqua
@@ -22,7 +21,7 @@ function Tetris(){
     this._god=new God
     this._god.game={
         setNext:next=>{
-            this._game.setNext(next)
+            this._game.in(['setNext',next])
         },
     }
     this._uiCache={}
@@ -55,10 +54,42 @@ function Tetris(){
     }
     this._tetromino.set_autofall()
     this.ui=doe.canvas({
-        className:'tetris',tabIndex:-1,width:640,height:480
+        className:'tetris',tabIndex:-1,width:640,height:480,
+        onkeydown:event=>{
+            switch(event.key){
+                case'Space':
+                    this._tetromino.harddrop()
+                    break
+                case'ArrowLeft':
+                    this._game.transfer(-1,0,0)
+                    break
+                case'ArrowUp':
+                    this._game.rotate(1)
+                    break
+                case'ArrowRight':
+                    this._game.transfer(1,0,0)
+                    break
+                case'ArrowDown':
+                    this._tetromino.softdrop()
+                    break
+                case'C':
+                case'c':
+                    this._game.hold()
+                    break
+                case'X':
+                case'x':
+                    this._game.rotate(1)
+                    break
+                case'Z':
+                case'z':
+                    this._game.rotate(0)
+                    break
+            }
+        },
+        onkeyup:event=>{
+        },
     })
     this._uiCache.context=this.ui.getContext('2d')
-    listenToKeys.call(this)
     this._installation={}
 }
 Tetris.style=``
@@ -105,7 +136,10 @@ Tetris.prototype._shadowPosition=function(){
     let delta_y__shadow=0
     while(this._game.valid_transfer(0,delta_y__shadow-1,0))
         delta_y__shadow--
-    return[this._game.status.current.x,this._game.status.current.y+delta_y__shadow]
+    return[
+        this._game.status.current.x,
+        this._game.status.current.y+delta_y__shadow
+    ]
 }
 Tetris.prototype.start=function(){
     this._start=~~performance.now()
