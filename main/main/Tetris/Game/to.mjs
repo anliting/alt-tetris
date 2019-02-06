@@ -9,12 +9,7 @@ export default function(t){
             if(interval<=t-this._status.down.start)
                 event.push([this._status.down.start,'down',interval])
         }
-        if(
-            this._status.horizontalMove&&
-            this._isValidTransfer(
-                this._status.horizontalMove.direction,0,0
-            )
-        ){
+        if(this._status.horizontalMove){
             let interval=this.status.horizontalMove.status=='first'?400:50
             if(interval<=t-this.status.horizontalMove.time)
                 event.push([
@@ -35,9 +30,12 @@ export default function(t){
                 this._status.down.start+=event[2]
             break
             case'horizontalMove':
-                this._transfer(
-                    t,this._status.horizontalMove.direction,0,0
+                this._isValidTransfer(
+                    this._status.horizontalMove.direction,0,0
                 )
+                    this._transfer(
+                        t,this._status.horizontalMove.direction,0,0
+                    )
                 this._status.horizontalMove.status='second'
                 this._status.horizontalMove.time+=event[2]
             break
