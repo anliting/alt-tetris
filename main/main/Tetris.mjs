@@ -57,7 +57,7 @@ function Tetris(){
         className:'tetris',tabIndex:-1,width:640,height:480,
         onkeydown:event=>{
             switch(event.key){
-                case'Space':
+                case' ':
                     this._tetromino.harddrop()
                     break
                 case'ArrowLeft':
@@ -108,17 +108,19 @@ Tetris.prototype._drawBoardAt=function(atX,atY){
         this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16)
     }
     if(this._game.status.current){
-        let p=this._shadowPosition()
+        let
+            p=this._shadowPosition(),
+            c=this._game.status.current
         this._drawTetrominoShapeAt(
             atX+17*p[0],
-            atY+17*(20-(p[1]+constant.shape[this._game.status.current.type][0].length)),
-            this._game.status.current.type,
-            this._game.status.current.direction,
+            atY+17*(20-(p[1]+constant.shape[c.type][0].length)),
+            c.type,
+            c.direction,
             'gray'
         )
         this._drawTetrominoAt(
             atX+17*this._game.status.current.x,
-            atY+17*(20-(this._game.status.current.y+constant.shape[this._game.status.current.type][0].length)),
+            atY+17*(20-(c.y+constant.shape[c.type][0].length)),
             this._game.status.current.type,
             this._game.status.current.direction
         )
