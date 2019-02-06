@@ -76,6 +76,12 @@ Game.prototype.in=function(event){
                 case'x':
                     this._rotate(1)
                 break
+                case'ArrowLeft':
+                    this.transfer(-1,0,0)
+                    break
+                case'ArrowRight':
+                    this.transfer(1,0,0)
+                    break
             }
     }
 }

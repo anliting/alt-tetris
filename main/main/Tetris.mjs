@@ -50,12 +50,6 @@ function Tetris(){
                 case' ':
                     this._tetromino.harddrop()
                     break
-                case'ArrowLeft':
-                    this._game.transfer(-1,0,0)
-                    break
-                case'ArrowRight':
-                    this._game.transfer(1,0,0)
-                    break
                 case'ArrowDown':
                     this._tetromino.softdrop()
                     break
