@@ -78,7 +78,9 @@ Game.prototype._drop=function(t){
     this._getCurrent(t)
 }
 Game.prototype._isValidTransfer=function(dx,dy,dd){
-    return isValidTransfer(this._status.current,this._board.array,dx,dy,dd)
+    return isValidTransfer(
+        this._status.current,this._board.array,dx,dy,dd
+    )
 }
 Game.prototype._checkLand=function(t){
     let land=!this._isValidTransfer(0,-1,0)
@@ -94,7 +96,9 @@ Game.prototype._transfer=function(t,dx,dy,dd){
         return 1
     this._status.current.x+=dx
     this._status.current.y+=dy
-    this._status.current.direction=((this._status.current.direction+dd)%4+4)%4
+    this._status.current.direction=((
+        this._status.current.direction+dd
+    )%4+4)%4
     this._checkLand(t)
     return 0
 }
@@ -131,14 +135,14 @@ Game.prototype.in=function(event){
                 break
                 case'ArrowLeft':
                     this._transfer(event[0],-1,0,0)
-                    break
+                break
                 case'ArrowRight':
                     this._transfer(event[0],1,0,0)
-                    break
+                break
                 case' ':
                     while(this._transfer(event[0],0,-1,0)==0);
                     this._drop(event[0])
-                    break
+                break
                 case'ArrowDown':
                     this._status.down={
                         mode:'softdrop',
@@ -146,7 +150,7 @@ Game.prototype.in=function(event){
                     }
                     if(this._isValidTransfer(0,-1,0))
                         this._transfer(event[0],0,-1,0)
-                    break
+                break
             }
             break
         case'keyUp':
