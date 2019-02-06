@@ -1,6 +1,25 @@
 import Game from                    './Tetris/Game.mjs'
 import God from                     './Tetris/God.mjs'
 import Ui from                      './Tetris/Ui.mjs'
+function processAnimationFrame(){
+    let frameStart=performance.now()
+    this._game.to(~~frameStart-this._start)
+    this._ui.drawGame(this._game.status)
+    let frameEnd=performance.now()
+    this._installation.animationFrameRequest=
+        requestAnimationFrame(this._processAnimationFrame)
+    let s=this._uiPerformanceStatistics
+    if(1e3<=frameStart-s.current.start){
+        s.history.push(s.current)
+        s.current={
+            start:      frameStart,
+            frameCount: 0,
+            frameTime:  0,
+        }
+    }
+    s.current.frameCount++
+    s.current.frameTime+=frameEnd-frameStart
+}
 function Tetris(){
     this._game=new Game
     this._game.god={
@@ -15,6 +34,7 @@ function Tetris(){
         in:event=>this._inGame(event),
     }
     this._installation={}
+    this._processAnimationFrame=processAnimationFrame.bind(this)
     this.ui=this._ui.node
 }
 Tetris.style=``
@@ -27,35 +47,15 @@ Tetris.prototype.start=function(){
 }
 Tetris.prototype.install=function(){
     this._uiPerformanceStatistics={
-        history:[],
-        start:performance.now(),
-        frameCount:0,
-        frameTime:0,
-    }
-    let processAnimationFrame=()=>{
-        let frameStart=performance.now()
-        this._game.to(~~frameStart-this._start)
-        this._ui.drawGame(this._game.status)
-        let frameTime=performance.now()-frameStart
-        if(1e3<=frameStart-this._uiPerformanceStatistics.start){
-            this._uiPerformanceStatistics.history.push({
-                start:          frameStart,
-                frameCount:     this._uiPerformanceStatistics.frameCount,
-                frameTime:      this._uiPerformanceStatistics.frameTime,
-            })
-            Object.assign(this._uiPerformanceStatistics,{
-                start:frameStart,
-                frameCount:0,
-                frameTime:0,
-            })
+        history:    [],
+        current:    {
+            start:          performance.now(),
+            frameCount:     0,
+            frameTime:      0,
         }
-        this._uiPerformanceStatistics.frameCount++
-        this._uiPerformanceStatistics.frameTime+=frameTime
-        this._installation.animationFrameRequest=
-            requestAnimationFrame(processAnimationFrame)
     }
     this._installation.animationFrameRequest=
-        requestAnimationFrame(processAnimationFrame)
+        requestAnimationFrame(this._processAnimationFrame)
 }
 Tetris.prototype.uninstall=function(){
     cancelAnimationFrame(this._installation.animationFrameRequest)
