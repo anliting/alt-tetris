@@ -13,6 +13,12 @@ let color=[
 function Ui(){
     this.node=doe.canvas({
         className:'tetris',tabIndex:-1,width:640,height:480,
+        onkeydown:event=>{
+            this.game.in(['keyDown',event.key])
+        },
+        onkeyup:event=>{
+            this.game.in(['keyUp',event.key])
+        },
     })
     this._uiCache={
         context:this.node.getContext('2d')
