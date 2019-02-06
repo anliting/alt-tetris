@@ -1,6 +1,8 @@
 import constant from                './constant.mjs'
 import isValidTransfer from         './isValidTransfer.mjs'
 import Board from                   './Game/Board.mjs'
+import prototypeIn from             './Game/in.mjs'
+import prototypeTo from             './Game/to.mjs'
 let initialY=[-2,-1,-1,0,-1,-1,-1]
 function Game(){
     this._history=[]
@@ -40,7 +42,6 @@ Game.prototype._hold=function(t){
         if(this._status.current==undefined)
             return
         this._status.hold=this._status.current.type
-        this._cetCurrent()
         this._getCurrent(t)
     }else if(this._status.current==undefined){
         this._setCurrent(t,this._status.hold)
@@ -62,8 +63,10 @@ Game.prototype._rotate=function(t,mode){
         c=this._status.current,
         wk=constant.srsWallKick[c.type][2*c.direction+mode]
     for(let i=0;i<5;i++)
-        if(this._transfer(t,wk[i][0],wk[i][1],dd)==0)
+        if(this._isValidTransfer(wk[i][0],wk[i][1],dd)){
+            this._transfer(t,wk[i][0],wk[i][1],dd)
             return i
+        }
     return 5
 }
 Game.prototype._drop=function(t){
@@ -86,10 +89,7 @@ Game.prototype._checkLand=function(t){
     let land=!this._isValidTransfer(0,-1,0)
     if(!!this._status.land==land)
         return
-    if(this._status.land)
-        this._status.land=undefined
-    else
-        this._status.land={time:t}
+    this._status.land=this._status.land?undefined:{time:t}
 }
 Game.prototype._transfer=function(t,dx,dy,dd){
     if(!this._isValidTransfer(dx,dy,dd))
@@ -109,83 +109,8 @@ Game.prototype._getCurrent=function(t){
     delete this._status.next
     this.god.getNext(this._status.godChoice)
 }
-Game.prototype.in=function(event){
-    this._history.push(event)
-    switch(event[1]){
-        case'setNext':
-            this._setNext(event[0],event[2])
-            break
-        case'keyDown':
-            if(this._status.key[event[2]])
-                break
-            this._status.key[event[2]]=1
-            switch(event[2]){
-                case'C':
-                case'c':
-                    this._hold(event[0])
-                break
-                case'Z':
-                case'z':
-                    this._rotate(event[0],0)
-                break
-                case'ArrowUp':
-                case'X':
-                case'x':
-                    this._rotate(event[0],1)
-                break
-                case'ArrowLeft':
-                    this._transfer(event[0],-1,0,0)
-                break
-                case'ArrowRight':
-                    this._transfer(event[0],1,0,0)
-                break
-                case' ':
-                    while(this._transfer(event[0],0,-1,0)==0);
-                    this._drop(event[0])
-                break
-                case'ArrowDown':
-                    this._status.down={
-                        mode:'softdrop',
-                        start:event[0],
-                    }
-                    if(this._isValidTransfer(0,-1,0))
-                        this._transfer(event[0],0,-1,0)
-                break
-            }
-            break
-        case'keyUp':
-            if(!this._status.key[event[2]])
-                break
-            this._status.key[event[2]]=0
-            switch(event[2]){
-                case'ArrowDown':
-                    this._status.down={
-                        mode:'gravity',
-                        start:event[0],
-                    }
-                    break
-            }
-            break
-    }
-}
-Game.prototype.to=function(t){
-    for(;this._status.current;){
-        if(this._status.land){
-            if(1e3<=t-this._status.land.time){
-                this._drop(t)
-                continue
-            }
-        }else{
-            let interval=this._status.down.mode=='gravity'?1e3:50
-            if(interval<=t-this._status.down.start){
-                this._transfer(t,0,-1,0)
-                this._status.down.start+=interval
-                continue
-            }
-        }
-        break
-    }
-}
+Game.prototype.in=prototypeIn
+Game.prototype.to=prototypeTo
 Object.defineProperty(Game.prototype,'status',{get(){
     let status=Object.create(this._status)
     status.board=this._board.array
