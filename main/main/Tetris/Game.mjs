@@ -1,15 +1,16 @@
 import Board from                   './Game/Board.mjs'
 import constant from                './constant.mjs'
+import isValidTransfer from         './isValidTransfer.mjs'
 let initialY=[-2,-1,-1,0,-1,-1,-1]
 function Game(){
     this._history=[]
-    this.status={
+    this._status={
         godChoice:[0,0,0,0,0,0,0],
     }
-    this.board=new Board
+    this._board=new Board
 }
 Game.prototype._setCurrent=function(type){
-    this.status.current={
+    this._status.current={
         type,
         direction:0,
         x:5+Math.floor(-constant.shape[type][0].length/2),
@@ -17,23 +18,23 @@ Game.prototype._setCurrent=function(type){
     }
 }
 Game.prototype._setNext=function(next){
-    if(this.status.current==undefined)
+    if(this._status.current==undefined)
         this._setCurrent(next)
     else
-        this.status.next=next
-    this.status.godChoice[next]=1
-    if(this.status.godChoice.reduce((a,b)=>a+b)==7)
-        this.status.godChoice=[0,0,0,0,0,0,0]
-    if(this.status.next==undefined)
-        this.god.getNext(this.status.godChoice)
+        this._status.next=next
+    this._status.godChoice[next]=1
+    if(this._status.godChoice.reduce((a,b)=>a+b)==7)
+        this._status.godChoice=[0,0,0,0,0,0,0]
+    if(this._status.next==undefined)
+        this.god.getNext(this._status.godChoice)
 }
 Game.prototype._hold=function(){
-    if(typeof this.status.hold=='undefined'){
-        this.status.hold=this.status.current.type
+    if(typeof this._status.hold=='undefined'){
+        this._status.hold=this._status.current.type
         this.getCurrent()
     }else{
-        let temp=this.status.hold
-        this.status.hold=this.status.current.type
+        let temp=this._status.hold
+        this._status.hold=this._status.current.type
         this._setCurrent(temp)
     }
 }
@@ -43,7 +44,7 @@ Game.prototype._rotate=function(mode){
      *  Return value: Return the order of wallkick if success,
      *      otherwise return 5.
      */
-    let dd=mode==0?-1:1,wk=constant.srsWallKick[this.status.current.type][2*this.status.current.direction+mode]
+    let dd=mode==0?-1:1,wk=constant.srsWallKick[this._status.current.type][2*this._status.current.direction+mode]
     for(let i=0;i<5;i++)
 
         if(this.transfer(
@@ -81,46 +82,36 @@ Game.prototype.in=function(event){
 Game.prototype.to=function(t){
 }
 Game.prototype.drop=function(){
-    this.board.put(
-        this.status.current.type,
-        this.status.current.direction,
-        this.status.current.x,
-        this.status.current.y,
+    this._board.put(
+        this._status.current.type,
+        this._status.current.direction,
+        this._status.current.x,
+        this._status.current.y,
     )
-    this.board.update()
+    this._board.update()
     this.getCurrent()
 }
 Game.prototype.valid_transfer=function(dx,dy,dd){
-    let
-        direction_new=((this.status.current.direction+dd)%4+4)%4,
-        shape=constant.shape[this.status.current.type][direction_new],
-        n=shape.length
-    for(let r=0;r<n;r++)
-    for(let c=0;c<n;c++)
-    if(shape[r][c]){
-        let x=this.status.current.x+dx+c
-        let y=this.status.current.y+dy+n-1-r
-        if(!(
-            0<=x&&x<10&&0<=y&&y<24&&
-            this.board.array[x][y]==undefined
-        ))
-            return 0
-    }
-    return 1
+    return isValidTransfer(this._status.current,this._board.array,dx,dy,dd)
 }
 Game.prototype.transfer=function(dx,dy,dd){
     if(!this.valid_transfer(dx,dy,dd))
         return 1
-    this.status.current.x+=dx
-    this.status.current.y+=dy
-    this.status.current.direction=((this.status.current.direction+dd)%4+4)%4
+    this._status.current.x+=dx
+    this._status.current.y+=dy
+    this._status.current.direction=((this._status.current.direction+dd)%4+4)%4
     return 0
 }
 Game.prototype.getCurrent=function(){
-    if(this.status.next==undefined)
+    if(this._status.next==undefined)
         return
-    this._setCurrent(this.status.next)
-    delete this.status.next
-    this.god.getNext(this.status.godChoice)
+    this._setCurrent(this._status.next)
+    delete this._status.next
+    this.god.getNext(this._status.godChoice)
 }
+Object.defineProperty(Game.prototype,'status',{get(){
+    let status=Object.create(this._status)
+    status.board=this._board.array
+    return status
+}})
 export default Game
