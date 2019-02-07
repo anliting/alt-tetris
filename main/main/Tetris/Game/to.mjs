@@ -22,7 +22,7 @@ export default function(t){
                     event.push([eventTime,'horizontalMove'])
             }
         }else if(this._status.clearLine){
-            let eventTime=this._status.clearLine.time+200
+            let eventTime=this._status.clearLine.time+125
             if(eventTime<=t)
                 event.push([eventTime,'clearLine'])
         }
