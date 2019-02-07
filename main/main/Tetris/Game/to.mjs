@@ -2,22 +2,22 @@ export default function(t){
     for(;;){
         let event=[]
         if(this._status.current){
+            {
+                let eventTime=this._status.down.start+(
+                    this._status.down.mode=='gravity'?1e3:50
+                )
+                if(eventTime<=t)
+                    event.push([eventTime,'down'])
+            }
             if(this._status.land){
                 let eventTime=this._status.land.time+500
                 if(eventTime<=t)
                     event.push([eventTime,'drop'])
             }
-            {
-                let
-                    interval=this._status.down.mode=='gravity'?1e3:50,
-                    eventTime=this._status.down.start+interval
-                if(eventTime<=t)
-                    event.push([eventTime,'down'])
-            }
             if(this._status.horizontalMove){
-                let
-                    interval=this._status.horizontalMove.status=='first'?300:50,
-                    eventTime=this._status.horizontalMove.time+interval
+                let eventTime=this._status.horizontalMove.time+(
+                    this._status.horizontalMove.status=='first'?300:50,
+                )
                 if(eventTime<=t)
                     event.push([eventTime,'horizontalMove'])
             }
