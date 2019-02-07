@@ -30,7 +30,7 @@ export default function(t){
                 this._drop(t)
             break
             case'down':
-                this._isValidTransfer(0,-1,0)
+                if(this._isValidTransfer(0,-1,0))
                     this._transfer(t,0,-1,0)
                 this._status.down.start=event[0]
             break
