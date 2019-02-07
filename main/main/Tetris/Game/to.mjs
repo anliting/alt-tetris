@@ -10,7 +10,7 @@ export default function(t){
                 event.push([this._status.down.start,'down',interval])
         }
         if(this._status.horizontalMove){
-            let interval=this.status.horizontalMove.status=='first'?400:50
+            let interval=this.status.horizontalMove.status=='first'?300:50
             if(interval<=t-this.status.horizontalMove.time)
                 event.push([
                     this.status.horizontalMove.time,
