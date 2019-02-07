@@ -21,7 +21,7 @@ function Ui(){
         },
     })
     this._uiCache={
-        context:this.node.getContext('2d')
+        context:this.node.getContext('2d',{alpha:false})
     }
 }
 Ui.prototype._drawBoardAt=function(atX,atY){
