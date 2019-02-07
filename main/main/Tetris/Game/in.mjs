@@ -30,25 +30,27 @@ export default function(event){
                     this._rotate(event[0],1)
                 break
                 case'ArrowLeft':
-                    if(!this._status.current)
-                        break
                     this._status.horizontalMove={
                         direction:  -1,
                         status:     'first',
                         time:       event[0],
                     }
-                    if(this._isValidTransfer(-1,0,0))
+                    if(
+                        this._status.current&&
+                        this._isValidTransfer(-1,0,0)
+                    )
                         this._transfer(event[0],-1,0,0)
                 break
                 case'ArrowRight':
-                    if(!this._status.current)
-                        break
                     this._status.horizontalMove={
                         direction:  1,
                         status:     'first',
                         time:       event[0],
                     }
-                    if(this._isValidTransfer(1,0,0))
+                    if(
+                        this._status.current&&
+                        this._isValidTransfer(1,0,0)
+                    )
                         this._transfer(event[0],1,0,0)
                 break
                 case' ':
@@ -59,13 +61,14 @@ export default function(event){
                     this._drop(event[0])
                 break
                 case'ArrowDown':
-                    if(!this._status.current)
-                        break
                     this._status.down={
                         mode:'softdrop',
                         start:event[0],
                     }
-                    if(this._isValidTransfer(0,-1,0))
+                    if(
+                        this._status.current&&
+                        this._isValidTransfer(0,-1,0)
+                    )
                         this._transfer(event[0],0,-1,0)
                 break
             }
