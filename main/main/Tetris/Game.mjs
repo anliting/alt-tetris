@@ -53,11 +53,6 @@ Game.prototype._hold=function(t){
     }
 }
 Game.prototype._rotate=function(t,mode){
-    /*
-     *  Rotate the tetromino with given mode.
-     *  Return value: Return the order of wallkick if success,
-     *      otherwise return 5.
-     */
     let
         dd=mode==0?-1:1,
         c=this._status.current,
@@ -65,9 +60,8 @@ Game.prototype._rotate=function(t,mode){
     for(let i=0;i<5;i++)
         if(this._isValidTransfer(wk[i][0],wk[i][1],dd)){
             this._transfer(t,wk[i][0],wk[i][1],dd)
-            return i
+            return
         }
-    return 5
 }
 Game.prototype._drop=function(t){
     this._board.put(
@@ -92,15 +86,12 @@ Game.prototype._checkLand=function(t){
     this._status.land=this._status.land?undefined:{time:t}
 }
 Game.prototype._transfer=function(t,dx,dy,dd){
-    if(!this._isValidTransfer(dx,dy,dd))
-        return 1
     this._status.current.x+=dx
     this._status.current.y+=dy
     this._status.current.direction=((
         this._status.current.direction+dd
     )%4+4)%4
     this._checkLand(t)
-    return 0
 }
 Game.prototype._getCurrent=function(t){
     if(this._status.next==undefined)

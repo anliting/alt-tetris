@@ -25,18 +25,18 @@ export default function(event){
                 break
                 case'ArrowLeft':
                     this._status.horizontalMove={
-                        direction:-1,
-                        status:'first',
-                        time:event[0],
+                        direction:  -1,
+                        status:     'first',
+                        time:       event[0],
                     }
                     if(this._isValidTransfer(-1,0,0))
                         this._transfer(event[0],-1,0,0)
                 break
                 case'ArrowRight':
                     this._status.horizontalMove={
-                        direction:1,
-                        status:'first',
-                        time:event[0],
+                        direction:  1,
+                        status:     'first',
+                        time:       event[0],
                     }
                     if(this._isValidTransfer(1,0,0))
                         this._transfer(event[0],1,0,0)
