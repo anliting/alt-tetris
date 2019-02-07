@@ -15,6 +15,61 @@ function Game(){
     }
     this._board=new Board
 }
+Game.prototype._checkLand=function(t){
+    let land=!this._isValidTransfer(0,-1,0)
+    if(!!this._status.land==land)
+        return
+    this._status.land=this._status.land?undefined:{time:t}
+}
+Game.prototype._drop=function(t){
+    this._board.put(
+        this._status.current.type,
+        this._status.current.direction,
+        this._status.current.x,
+        this._status.current.y,
+    )
+    this._status.current=undefined
+    if(this._board.existLineClear())
+        this._status.clearLine={time:t}
+    else
+        this._getCurrent(t)
+}
+Game.prototype._getCurrent=function(t){
+    if(this._status.next==undefined)
+        return
+    this._setCurrent(t,this._status.next)
+    delete this._status.next
+    this.god.getNext(this._status.godChoice)
+}
+Game.prototype._hold=function(t){
+    if(this._status.hold==undefined){
+        if(this._status.current==undefined)
+            return
+        this._status.hold=this._status.current.type
+        this._getCurrent(t)
+    }else if(this._status.current==undefined){
+        this._setCurrent(t,this._status.hold)
+        this._status.hold=undefined
+    }else{
+        let temp=this._status.hold
+        this._status.hold=this._status.current.type
+        this._setCurrent(t,temp)
+    }
+}
+Game.prototype._isValidTransfer=function(dx,dy,dd){
+    return isValidTransfer(
+        this._status.current,this._board.array,dx,dy,dd
+    )
+}
+Game.prototype._rotate=function(t,mode){
+    let
+        dd=mode==0?-1:1,
+        c=this._status.current,
+        wk=constant.srsWallKick[c.type][2*c.direction+mode]
+    for(let i=0;i<5;i++)
+        if(this._isValidTransfer(wk[i][0],wk[i][1],dd))
+            return this._transfer(t,wk[i][0],wk[i][1],dd)
+}
 Game.prototype._setCurrent=function(t,type){
     this._status.down.start=t
     this._status.current={
@@ -37,54 +92,6 @@ Game.prototype._setNext=function(t,next){
     if(this._status.next==undefined)
         this.god.getNext(this._status.godChoice)
 }
-Game.prototype._hold=function(t){
-    if(this._status.hold==undefined){
-        if(this._status.current==undefined)
-            return
-        this._status.hold=this._status.current.type
-        this._getCurrent(t)
-    }else if(this._status.current==undefined){
-        this._setCurrent(t,this._status.hold)
-        this._status.hold=undefined
-    }else{
-        let temp=this._status.hold
-        this._status.hold=this._status.current.type
-        this._setCurrent(t,temp)
-    }
-}
-Game.prototype._rotate=function(t,mode){
-    let
-        dd=mode==0?-1:1,
-        c=this._status.current,
-        wk=constant.srsWallKick[c.type][2*c.direction+mode]
-    for(let i=0;i<5;i++)
-        if(this._isValidTransfer(wk[i][0],wk[i][1],dd)){
-            this._transfer(t,wk[i][0],wk[i][1],dd)
-            return
-        }
-}
-Game.prototype._drop=function(t){
-    this._board.put(
-        this._status.current.type,
-        this._status.current.direction,
-        this._status.current.x,
-        this._status.current.y,
-    )
-    this._status.current=undefined
-    this._board.update()
-    this._getCurrent(t)
-}
-Game.prototype._isValidTransfer=function(dx,dy,dd){
-    return isValidTransfer(
-        this._status.current,this._board.array,dx,dy,dd
-    )
-}
-Game.prototype._checkLand=function(t){
-    let land=!this._isValidTransfer(0,-1,0)
-    if(!!this._status.land==land)
-        return
-    this._status.land=this._status.land?undefined:{time:t}
-}
 Game.prototype._transfer=function(t,dx,dy,dd){
     this._status.current.x+=dx
     this._status.current.y+=dy
@@ -92,13 +99,6 @@ Game.prototype._transfer=function(t,dx,dy,dd){
         this._status.current.direction+dd
     )%4+4)%4
     this._checkLand(t)
-}
-Game.prototype._getCurrent=function(t){
-    if(this._status.next==undefined)
-        return
-    this._setCurrent(t,this._status.next)
-    delete this._status.next
-    this.god.getNext(this._status.godChoice)
 }
 Game.prototype.in=prototypeIn
 Game.prototype.to=prototypeTo

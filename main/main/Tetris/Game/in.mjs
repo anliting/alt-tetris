@@ -12,18 +12,26 @@ export default function(event){
             switch(event[2]){
                 case'C':
                 case'c':
+                    if(this._status.lineClear)
+                        break
                     this._hold(event[0])
                 break
                 case'Z':
                 case'z':
+                    if(!this._status.current)
+                        break
                     this._rotate(event[0],0)
                 break
                 case'ArrowUp':
                 case'X':
                 case'x':
+                    if(!this._status.current)
+                        break
                     this._rotate(event[0],1)
                 break
                 case'ArrowLeft':
+                    if(!this._status.current)
+                        break
                     this._status.horizontalMove={
                         direction:  -1,
                         status:     'first',
@@ -33,6 +41,8 @@ export default function(event){
                         this._transfer(event[0],-1,0,0)
                 break
                 case'ArrowRight':
+                    if(!this._status.current)
+                        break
                     this._status.horizontalMove={
                         direction:  1,
                         status:     'first',
@@ -42,11 +52,15 @@ export default function(event){
                         this._transfer(event[0],1,0,0)
                 break
                 case' ':
+                    if(!this._status.current)
+                        break
                     for(;this._isValidTransfer(0,-1,0);)
                         this._transfer(event[0],0,-1,0)
                     this._drop(event[0])
                 break
                 case'ArrowDown':
+                    if(!this._status.current)
+                        break
                     this._status.down={
                         mode:'softdrop',
                         start:event[0],
