@@ -71,13 +71,15 @@ Game.prototype._rotate=function(t,mode){
             return this._transfer(t,wk[i][0],wk[i][1],dd)
 }
 Game.prototype._setCurrent=function(t,type){
-    this._status.down.start=t
     this._status.current={
         type,
         direction:0,
         x:5+Math.floor(-constant.shape[type][0].length/2),
         y:20+initialY[type],
     }
+    this._status.down.start=t
+    if(this._status.horizontalMove)
+        this._status.horizontalMove.time=t
     this._status.land=undefined
     this._checkLand(t)
 }

@@ -33,7 +33,7 @@ export default function(t){
             case'clearLine':
                 this._status.clearLine=undefined
                 this._board.clearLine()
-                this._getCurrent()
+                this._getCurrent(t)
             break
             case'drop':
                 this._drop(t)
