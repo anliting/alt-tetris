@@ -1,5 +1,5 @@
-import doe from         '../lib/doe.mjs'
-import Tetris from      './main/Tetris.mjs'
+import doe from         '../../lib/doe.mjs'
+import Tetris from      '../Tetris.mjs'
 doe.head(
     doe.style(`
         html{
@@ -32,5 +32,5 @@ tetris.install()
 doe.body(doe.div(doe.div(tetris.ui)))
 tetris.ui.focus()
 // hacker access
-//window.tetris=tetris
+window.tetris=tetris
 tetris.start()

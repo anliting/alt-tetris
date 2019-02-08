@@ -11,4 +11,5 @@ async function link(input,file){
         paths:s=>skip.includes(s)&&s,
     })
 }
-link(`main.mjs`,`main.static.mjs`)
+link(`Tetris.mjs`,`Tetris.static.mjs`)
+link(`main/main.mjs`,`main/main.static.mjs`)

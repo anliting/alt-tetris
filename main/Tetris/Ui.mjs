@@ -1,4 +1,4 @@
-import doe from                     '../../../lib/doe.mjs'
+import doe from                     '../../lib/doe.mjs'
 import constant from                './constant.mjs'
 import isValidTransfer from         './isValidTransfer.mjs'
 let color=[
