@@ -271,7 +271,6 @@ Board.prototype.clearLine=function(){
 };
 
 function prototypeIn(event){
-    this._history.push(event);
     this.to(event[0]);
     switch(event[1]){
         case'setNext':
@@ -436,7 +435,6 @@ function prototypeTo(t){
 
 let initialY=[-2,-1,-1,0,-1,-1,-1];
 function Game(){
-    this._history=[];
     this._status={
         godChoice:[0,0,0,0,0,0,0],
         key:{},

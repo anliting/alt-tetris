@@ -5,7 +5,6 @@ import prototypeIn from             './Game/in.mjs'
 import prototypeTo from             './Game/to.mjs'
 let initialY=[-2,-1,-1,0,-1,-1,-1]
 function Game(){
-    this._history=[]
     this._status={
         godChoice:[0,0,0,0,0,0,0],
         key:{},

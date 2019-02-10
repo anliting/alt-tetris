@@ -1,5 +1,4 @@
 export default function(event){
-    this._history.push(event)
     this.to(event[0])
     switch(event[1]){
         case'setNext':
