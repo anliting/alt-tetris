@@ -12,4 +12,4 @@ async function link(input,file){
     })
 }
 link(`Tetris.mjs`,`Tetris.static.mjs`)
-link(`test/main.mjs`,`test/main.static.mjs`)
+link(`demo/main.mjs`,`demo/main.static.mjs`)

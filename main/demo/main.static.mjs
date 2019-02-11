@@ -735,6 +735,4 @@ let tetris=new Tetris;
 tetris.install();
 doe$1.body(doe$1.div(doe$1.div(tetris.ui)));
 tetris.ui.focus();
-// hacker access
-window.tetris=tetris;
 tetris.start();
