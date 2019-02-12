@@ -164,7 +164,7 @@ srsWallKick[2]=srsWallKick[4]=srsWallKick[5]=srsWallKick[6]=srsWallKick[1];
 var constant = {
     shape,
     srsWallKick,
-}
+};
 
 function isValidTransfer(current,board,dx,dy,dd){
     let
@@ -548,7 +548,7 @@ var doe$1 = new Proxy(doe,{
     get:(t,p)=>methods[p]||function(){
         return doe(document.createElement(p),...arguments)
     }
-})
+});
 
 let color=[
     '#00FFFF',  // Aqua
@@ -621,7 +621,7 @@ Ui.prototype._shadowPosition=function(){
         status.current,status.board,0,delta_y__shadow-1,0
     ))
         delta_y__shadow--;
-    return[
+    return [
         status.current.x,
         status.current.y+delta_y__shadow
     ]
