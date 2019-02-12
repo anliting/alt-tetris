@@ -164,7 +164,7 @@ srsWallKick[2]=srsWallKick[4]=srsWallKick[5]=srsWallKick[6]=srsWallKick[1];
 var constant = {
     shape,
     srsWallKick,
-};
+}
 
 function isValidTransfer(current,board,dx,dy,dd){
     let
@@ -216,8 +216,68 @@ Board.prototype.clearLine=function(){
     }
 };
 
-function prototypeIn(event){
-    this.to(event[0]);
+function _to(t){
+    for(;;){
+        let event=[];
+        if(this._status.current){
+            {
+                let eventTime=this._status.down.start+(
+                    this._status.down.mode=='gravity'?1e3:50
+                );
+                if(eventTime<=t)
+                    event.push([eventTime,'down']);
+            }
+            if(this._status.land){
+                let eventTime=this._status.land.time+500;
+                if(eventTime<=t)
+                    event.push([eventTime,'drop']);
+            }
+            if(this._status.horizontalMove){
+                let eventTime=this._status.horizontalMove.time+(
+                    this._status.horizontalMove.status=='first'?300:50
+                );
+                if(eventTime<=t)
+                    event.push([eventTime,'horizontalMove']);
+            }
+        }else if(this._status.clearLine){
+            let eventTime=this._status.clearLine.time+125;
+            if(eventTime<=t)
+                event.push([eventTime,'clearLine']);
+        }
+        if(!event.length)
+            break
+        event=event.reduce((a,b)=>a[0]<b[0]?a:b);
+        switch(event[1]){
+            case'clearLine':
+                this._set.board=1;
+                this._status.clearLine=undefined;
+                this._board.clearLine();
+                this._getCurrent(t);
+            break
+            case'drop':
+                this._drop(t);
+            break
+            case'down':
+                if(this._isValidTransfer(0,-1,0))
+                    this._transfer(t,0,-1,0);
+                this._status.down.start=event[0];
+            break
+            case'horizontalMove':
+                if(this._isValidTransfer(
+                    this._status.horizontalMove.direction,0,0
+                ))
+                    this._transfer(
+                        t,this._status.horizontalMove.direction,0,0
+                    );
+                this._status.horizontalMove.status='second';
+                this._status.horizontalMove.time=event[0];
+            break
+        }
+    }
+}
+
+function _processEvent(event){
+    this._to(event[0]);
     switch(event[1]){
         case'setNext':
             this._setNext(event[0],event[2]);
@@ -320,65 +380,6 @@ function prototypeIn(event){
     }
 }
 
-function prototypeTo(t){
-    for(;;){
-        let event=[];
-        if(this._status.current){
-            {
-                let eventTime=this._status.down.start+(
-                    this._status.down.mode=='gravity'?1e3:50
-                );
-                if(eventTime<=t)
-                    event.push([eventTime,'down']);
-            }
-            if(this._status.land){
-                let eventTime=this._status.land.time+500;
-                if(eventTime<=t)
-                    event.push([eventTime,'drop']);
-            }
-            if(this._status.horizontalMove){
-                let eventTime=this._status.horizontalMove.time+(
-                    this._status.horizontalMove.status=='first'?300:50
-                );
-                if(eventTime<=t)
-                    event.push([eventTime,'horizontalMove']);
-            }
-        }else if(this._status.clearLine){
-            let eventTime=this._status.clearLine.time+125;
-            if(eventTime<=t)
-                event.push([eventTime,'clearLine']);
-        }
-        if(!event.length)
-            break
-        event=event.reduce((a,b)=>a[0]<b[0]?a:b);
-        switch(event[1]){
-            case'clearLine':
-                this._status.clearLine=undefined;
-                this._board.clearLine();
-                this._getCurrent(t);
-            break
-            case'drop':
-                this._drop(t);
-            break
-            case'down':
-                if(this._isValidTransfer(0,-1,0))
-                    this._transfer(t,0,-1,0);
-                this._status.down.start=event[0];
-            break
-            case'horizontalMove':
-                if(this._isValidTransfer(
-                    this._status.horizontalMove.direction,0,0
-                ))
-                    this._transfer(
-                        t,this._status.horizontalMove.direction,0,0
-                    );
-                this._status.horizontalMove.status='second';
-                this._status.horizontalMove.time=event[0];
-            break
-        }
-    }
-}
-
 let initialY=[-2,-1,-1,0,-1,-1,-1];
 function Game(){
     this._status={
@@ -397,12 +398,14 @@ Game.prototype._checkLand=function(t){
     this._status.land=this._status.land?undefined:{time:t};
 };
 Game.prototype._drop=function(t){
+    this._set.board=1;
     this._board.put(
         this._status.current.type,
         this._status.current.direction,
         this._status.current.x,
         this._status.current.y,
     );
+    this._set.current=1;
     this._status.current=undefined;
     if(this._board.existLineClear())
         this._status.clearLine={time:t};
@@ -413,6 +416,7 @@ Game.prototype._getCurrent=function(t){
     if(this._status.next==undefined)
         return
     this._setCurrent(t,this._status.next);
+    this._set.next=1;
     delete this._status.next;
     this.god.getNext(this._status.godChoice);
 };
@@ -430,6 +434,7 @@ Game.prototype._hold=function(t){
         this._status.hold=this._status.current.type;
         this._setCurrent(t,temp);
     }
+    this._set.hold=1;
 };
 Game.prototype._isValidTransfer=function(dx,dy,dd){
     return isValidTransfer(
@@ -446,6 +451,7 @@ Game.prototype._rotate=function(t,mode){
             return this._transfer(t,wk[i][0],wk[i][1],dd)
 };
 Game.prototype._setCurrent=function(t,type){
+    this._set.current=1;
     this._status.current={
         type,
         direction:0,
@@ -461,8 +467,10 @@ Game.prototype._setCurrent=function(t,type){
 Game.prototype._setNext=function(t,next){
     if(this._status.current==undefined)
         this._setCurrent(t,next);
-    else
+    else{
+        this._set.next=1;
         this._status.next=next;
+    }
     this._status.godChoice[next]=1;
     if(this._status.godChoice.reduce((a,b)=>a+b)==7)
         this._status.godChoice=[0,0,0,0,0,0,0];
@@ -470,6 +478,7 @@ Game.prototype._setNext=function(t,next){
         this.god.getNext(this._status.godChoice);
 };
 Game.prototype._transfer=function(t,dx,dy,dd){
+    this._set.current=1;
     this._status.current.x+=dx;
     this._status.current.y+=dy;
     this._status.current.direction=((
@@ -477,12 +486,32 @@ Game.prototype._transfer=function(t,dx,dy,dd){
     )%4+4)%4;
     this._checkLand(t);
 };
-Game.prototype.in=prototypeIn;
-Game.prototype.to=prototypeTo;
+Game.prototype._to=_to;
+Game.prototype._processEvent=_processEvent;
+Game.prototype.in=function(event){
+    this._set={};
+    this._processEvent(event);
+    if(this._set.board)
+        this.ui.set(['board',this._board.array]);
+    if(this._set.current)
+        this.ui.set(['current',this._status.current]);
+    if(this._set.hold)
+        this.ui.set(['hold',this._status.hold]);
+    if(this._set.next)
+        this.ui.set(['next',this._status.next]);
+};
+Game.prototype.to=function(t){
+    this._set={};
+    this._to(t);
+    if(this._set.board)
+        this.ui.set(['board',this._board.array]);
+    if(this._set.current)
+        this.ui.set(['current',this._status.current]);
+    if(this._set.next)
+        this.ui.set(['next',this._status.next]);
+};
 Object.defineProperty(Game.prototype,'status',{get(){
-    let status=Object.create(this._status);
-    status.board=this._board.array;
-    return status
+    return this._status
 }});
 
 function God(){
@@ -548,7 +577,7 @@ var doe$1 = new Proxy(doe,{
     get:(t,p)=>methods[p]||function(){
         return doe(document.createElement(p),...arguments)
     }
-});
+})
 
 let color=[
     '#00FFFF',  // Aqua
@@ -571,6 +600,11 @@ function Ui(){
     });
     this._uiCache={
         context:this.node.getContext('2d',{alpha:false})
+    };
+    this._uiCache.context.fillStyle='darkgray';
+    this._uiCache.context.fillRect(0,0,640,480);
+    this._status={
+        board:[...Array(10)].map(()=>({}))
     };
 }
 Ui.prototype._drawBoardAt=function(atX,atY){
@@ -621,26 +655,50 @@ Ui.prototype._shadowPosition=function(){
         status.current,status.board,0,delta_y__shadow-1,0
     ))
         delta_y__shadow--;
-    return [
+    return[
         status.current.x,
         status.current.y+delta_y__shadow
     ]
 };
-Ui.prototype.drawGame=function(status){
-    this._status=status;
-    this._uiCache.context.fillStyle='darkgray';
-    this._uiCache.context.fillRect(0,0,640,480);
-    this._drawBoardAt(160,80);
-    if(status.next!=undefined)
-        this._drawTetrominoAt(400,80,status.next);
-    if(status.hold!=undefined)
-        this._drawTetrominoAt(80,80,status.hold);
+Ui.prototype.set=function(set){
+    if('board' in set)
+        this._status.board=set.board;
+    if('current' in set)
+        this._status.current=set.current;
+    if(
+        'board' in set||
+        'current' in set
+    ){
+        this._uiCache.context.fillStyle='darkgray';
+        this._uiCache.context.fillRect(160,12,169,407);
+        this._drawBoardAt(160,80);
+    }
+    if('next' in set){
+        this._status.next=set.next;
+        this._uiCache.context.fillStyle='darkgray';
+        this._uiCache.context.fillRect(400,80,67,67);
+        if(this._status.next!=undefined)
+            this._drawTetrominoAt(400,80,this._status.next);
+    }
+    if('hold' in set){
+        this._status.hold=set.hold;
+        this._uiCache.context.fillStyle='darkgray';
+        this._uiCache.context.fillRect(80,80,67,67);
+        if(this._status.hold!=undefined)
+            this._drawTetrominoAt(80,80,this._status.hold);
+    }
 };
 
 function processAnimationFrame(){
     let computeStart=performance.now();
     this._game.to(~~computeStart-this._start);
-    this._ui.drawGame(this._game.status);
+    if(this._setUi.length){
+        let set={};
+        for(let s of this._setUi)
+            set[s[0]]=s[1];
+        this._setUi=[];
+        this._ui.set(set);
+    }
     let computeEnd=performance.now();
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame);
@@ -672,21 +730,36 @@ function processAnimationFrame(){
 function Tetris(){
     this._game=new Game;
     this._game.god={
-        getNext:choice=>this._god.getNext(choice),
+        getNext:choice=>this._inQueue(()=>this._god.getNext(choice)),
+    };
+    this._game.ui={
+        set:set=>this._setUi.push(set),
     };
     this._god=new God;
     this._god.game={
-        setNext:next=>this._inGame(['setNext',next]),
+        setNext:next=>this._inQueue(()=>this._inGame(['setNext',next])),
     };
     this._ui=new Ui;
     this._ui.game={
         in:event=>this._inGame(event),
     };
+    this._setUi=[];
     this._installation={};
     this._processAnimationFrame=processAnimationFrame.bind(this);
+    this._queue=[];
+    this._inStack=0;
     this.ui=this._ui.node;
 }
 Tetris.style=``;
+Tetris.prototype._inQueue=function(f){
+    this._queue.push(f);
+    if(this._inStack)
+        return
+    this._inStack=1;
+    for(;this._queue.length;)
+        this._queue.shift()();
+    this._inStack=0;
+};
 Tetris.prototype._inGame=function(a){
     this._game.in([~~performance.now()-this._start,...a]);
 };
