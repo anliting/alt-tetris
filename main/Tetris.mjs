@@ -4,6 +4,7 @@ import Ui from                      './Tetris/Ui.mjs'
 function processAnimationFrame(){
     let computeStart=performance.now()
     this._game.to(~~computeStart-this._start)
+    this._outQueue()
     if(this._setUi.length){
         let set={}
         for(let s of this._setUi)
@@ -42,43 +43,41 @@ function processAnimationFrame(){
 function Tetris(){
     this._game=new Game
     this._game.god={
-        getNext:choice=>this._inQueue(()=>this._god.getNext(choice)),
+        getNext:choice=>this._queue.push(()=>this._god.getNext(choice)),
     }
     this._game.ui={
         set:set=>this._setUi.push(set),
     }
     this._god=new God
     this._god.game={
-        setNext:next=>this._inQueue(()=>this._inGame(['setNext',next])),
+        setNext:next=>this._queue.push(()=>this._inGame(['setNext',next])),
     }
     this._ui=new Ui
     this._ui.game={
-        in:event=>this._inGame(event),
+        in:event=>{
+            this._inGame(event)
+        },
     }
     this._setUi=[]
     this._installation={}
     this._processAnimationFrame=processAnimationFrame.bind(this)
     this._queue=[]
-    this._inStack=0
     this.ui=this._ui.node
 }
 Tetris.style=``
-Tetris.prototype._inQueue=function(f){
-    this._queue.push(f)
-    if(this._inStack)
-        return
-    this._inStack=1
+Tetris.prototype._outQueue=function(){
     for(;this._queue.length;)
         this._queue.shift()()
-    this._inStack=0
 }
 Tetris.prototype._inGame=function(a){
     this._game.in([~~performance.now()-this._start,...a])
+    this._outQueue()
 }
 Tetris.prototype._frameSecond=null
 Tetris.prototype.start=function(){
     this._start=~~performance.now()
     this._god.getNext(this._game.status.godChoice)
+    this._outQueue()
 }
 Tetris.prototype.install=function(){
     this._installation.animationFrameRequest=
