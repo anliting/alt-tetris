@@ -42,18 +42,14 @@ function processAnimationFrame(){
 function Tetris(){
     this._game=new Game
     this._game.god={
-        getNext:choice=>{
-            setTimeout(()=>this._god.getNext(choice),1000)
-        },
+        getNext:choice=>this._inQueue(()=>this._god.getNext(choice)),
     }
     this._game.ui={
         set:set=>this._setUi.push(set),
     }
     this._god=new God
     this._god.game={
-        setNext:next=>{
-            setTimeout(()=>this._inGame(['setNext',next]),1000)
-        },
+        setNext:next=>this._inQueue(()=>this._inGame(['setNext',next])),
     }
     this._ui=new Ui
     this._ui.game={
@@ -62,9 +58,20 @@ function Tetris(){
     this._setUi=[]
     this._installation={}
     this._processAnimationFrame=processAnimationFrame.bind(this)
+    this._queue=[]
+    this._inStack=0
     this.ui=this._ui.node
 }
 Tetris.style=``
+Tetris.prototype._inQueue=function(f){
+    this._queue.push(f)
+    if(this._inStack)
+        return
+    this._inStack=1
+    for(;this._queue.length;)
+        this._queue.shift()()
+    this._inStack=0
+}
 Tetris.prototype._inGame=function(a){
     this._game.in([~~performance.now()-this._start,...a])
 }

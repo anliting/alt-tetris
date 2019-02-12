@@ -83,23 +83,26 @@ Ui.prototype._shadowPosition=function(){
     ]
 }
 Ui.prototype.set=function(set){
-    if(set.board)
+    if('board' in set)
         this._status.board=set.board
-    if(set.current)
+    if('current' in set)
         this._status.current=set.current
-    if(set.board||set.current){
+    if(
+        'board' in set||
+        'current' in set
+    ){
         this._uiCache.context.fillStyle='darkgray'
         this._uiCache.context.fillRect(160,12,169,407)
         this._drawBoardAt(160,80)
     }
-    if(set.next){
+    if('next' in set){
         this._status.next=set.next
         this._uiCache.context.fillStyle='darkgray'
         this._uiCache.context.fillRect(400,80,67,67)
         if(this._status.next!=undefined)
             this._drawTetrominoAt(400,80,this._status.next)
     }
-    if(set.hold){
+    if('hold' in set){
         this._status.hold=set.hold
         this._uiCache.context.fillStyle='darkgray'
         this._uiCache.context.fillRect(80,80,67,67)
