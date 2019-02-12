@@ -4,7 +4,13 @@ import Ui from                      './Tetris/Ui.mjs'
 function processAnimationFrame(){
     let computeStart=performance.now()
     this._game.to(~~computeStart-this._start)
-    this._ui.drawGame(this._game.status)
+    if(this._setUi.length){
+        let set={}
+        for(let s of this._setUi)
+            set[s[0]]=s[1]
+        this._setUi=[]
+        this._ui.set(set)
+    }
     let computeEnd=performance.now()
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame)
@@ -36,16 +42,24 @@ function processAnimationFrame(){
 function Tetris(){
     this._game=new Game
     this._game.god={
-        getNext:choice=>this._god.getNext(choice),
+        getNext:choice=>{
+            setTimeout(()=>this._god.getNext(choice),0)
+        },
+    }
+    this._game.ui={
+        set:set=>this._setUi.push(set),
     }
     this._god=new God
     this._god.game={
-        setNext:next=>this._inGame(['setNext',next]),
+        setNext:next=>{
+            setTimeout(()=>this._inGame(['setNext',next]),0)
+        },
     }
     this._ui=new Ui
     this._ui.game={
         in:event=>this._inGame(event),
     }
+    this._setUi=[]
     this._installation={}
     this._processAnimationFrame=processAnimationFrame.bind(this)
     this.ui=this._ui.node

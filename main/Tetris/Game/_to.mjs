@@ -31,6 +31,7 @@ export default function(t){
         event=event.reduce((a,b)=>a[0]<b[0]?a:b)
         switch(event[1]){
             case'clearLine':
+                this._set.board=1
                 this._status.clearLine=undefined
                 this._board.clearLine()
                 this._getCurrent(t)

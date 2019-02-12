@@ -1,5 +1,5 @@
 export default function(event){
-    this.to(event[0])
+    this._to(event[0])
     switch(event[1]){
         case'setNext':
             this._setNext(event[0],event[2])

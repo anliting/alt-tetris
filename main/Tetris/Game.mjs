@@ -1,8 +1,8 @@
 import constant from                './constant.mjs'
 import isValidTransfer from         './isValidTransfer.mjs'
 import Board from                   './Game/Board.mjs'
-import prototypeIn from             './Game/in.mjs'
-import prototypeTo from             './Game/to.mjs'
+import _to from                     './Game/_to.mjs'
+import _processEvent from           './Game/_processEvent.mjs'
 let initialY=[-2,-1,-1,0,-1,-1,-1]
 function Game(){
     this._status={
@@ -21,12 +21,14 @@ Game.prototype._checkLand=function(t){
     this._status.land=this._status.land?undefined:{time:t}
 }
 Game.prototype._drop=function(t){
+    this._set.board=1
     this._board.put(
         this._status.current.type,
         this._status.current.direction,
         this._status.current.x,
         this._status.current.y,
     )
+    this._set.current=1
     this._status.current=undefined
     if(this._board.existLineClear())
         this._status.clearLine={time:t}
@@ -37,6 +39,7 @@ Game.prototype._getCurrent=function(t){
     if(this._status.next==undefined)
         return
     this._setCurrent(t,this._status.next)
+    this._set.next=1
     delete this._status.next
     this.god.getNext(this._status.godChoice)
 }
@@ -54,6 +57,7 @@ Game.prototype._hold=function(t){
         this._status.hold=this._status.current.type
         this._setCurrent(t,temp)
     }
+    this._set.hold=1
 }
 Game.prototype._isValidTransfer=function(dx,dy,dd){
     return isValidTransfer(
@@ -70,6 +74,7 @@ Game.prototype._rotate=function(t,mode){
             return this._transfer(t,wk[i][0],wk[i][1],dd)
 }
 Game.prototype._setCurrent=function(t,type){
+    this._set.current=1
     this._status.current={
         type,
         direction:0,
@@ -85,8 +90,10 @@ Game.prototype._setCurrent=function(t,type){
 Game.prototype._setNext=function(t,next){
     if(this._status.current==undefined)
         this._setCurrent(t,next)
-    else
+    else{
+        this._set.next=1
         this._status.next=next
+    }
     this._status.godChoice[next]=1
     if(this._status.godChoice.reduce((a,b)=>a+b)==7)
         this._status.godChoice=[0,0,0,0,0,0,0]
@@ -94,6 +101,7 @@ Game.prototype._setNext=function(t,next){
         this.god.getNext(this._status.godChoice)
 }
 Game.prototype._transfer=function(t,dx,dy,dd){
+    this._set.current=1
     this._status.current.x+=dx
     this._status.current.y+=dy
     this._status.current.direction=((
@@ -101,11 +109,31 @@ Game.prototype._transfer=function(t,dx,dy,dd){
     )%4+4)%4
     this._checkLand(t)
 }
-Game.prototype.in=prototypeIn
-Game.prototype.to=prototypeTo
+Game.prototype._to=_to
+Game.prototype._processEvent=_processEvent
+Game.prototype.in=function(event){
+    this._set={}
+    this._processEvent(event)
+    if(this._set.board)
+        this.ui.set(['board',this._board.array])
+    if(this._set.current)
+        this.ui.set(['current',this._status.current])
+    if(this._set.hold)
+        this.ui.set(['hold',this._status.hold])
+    if(this._set.next)
+        this.ui.set(['next',this._status.next])
+}
+Game.prototype.to=function(t){
+    this._set={}
+    this._to(t)
+    if(this._set.board)
+        this.ui.set(['board',this._board.array])
+    if(this._set.current)
+        this.ui.set(['current',this._status.current])
+    if(this._set.next)
+        this.ui.set(['next',this._status.next])
+}
 Object.defineProperty(Game.prototype,'status',{get(){
-    let status=Object.create(this._status)
-    status.board=this._board.array
-    return status
+    return this._status
 }})
 export default Game
