@@ -43,7 +43,7 @@ function Tetris(){
     this._game=new Game
     this._game.god={
         getNext:choice=>{
-            setTimeout(()=>this._god.getNext(choice),0)
+            setTimeout(()=>this._god.getNext(choice),1000)
         },
     }
     this._game.ui={
@@ -52,7 +52,7 @@ function Tetris(){
     this._god=new God
     this._god.game={
         setNext:next=>{
-            setTimeout(()=>this._inGame(['setNext',next]),0)
+            setTimeout(()=>this._inGame(['setNext',next]),1000)
         },
     }
     this._ui=new Ui

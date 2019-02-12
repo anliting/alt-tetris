@@ -92,17 +92,19 @@ Ui.prototype.set=function(set){
         this._uiCache.context.fillRect(160,12,169,407)
         this._drawBoardAt(160,80)
     }
-    if(set.next)
+    if(set.next){
         this._status.next=set.next
-    this._uiCache.context.fillStyle='darkgray'
-    this._uiCache.context.fillRect(400,80,67,67)
-    if(this._status.next!=undefined)
-        this._drawTetrominoAt(400,80,this._status.next)
-    if(set.hold)
+        this._uiCache.context.fillStyle='darkgray'
+        this._uiCache.context.fillRect(400,80,67,67)
+        if(this._status.next!=undefined)
+            this._drawTetrominoAt(400,80,this._status.next)
+    }
+    if(set.hold){
         this._status.hold=set.hold
-    this._uiCache.context.fillStyle='darkgray'
-    this._uiCache.context.fillRect(80,80,67,67)
-    if(this._status.hold!=undefined)
-        this._drawTetrominoAt(80,80,this._status.hold)
+        this._uiCache.context.fillStyle='darkgray'
+        this._uiCache.context.fillRect(80,80,67,67)
+        if(this._status.hold!=undefined)
+            this._drawTetrominoAt(80,80,this._status.hold)
+    }
 }
 export default Ui
