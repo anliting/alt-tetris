@@ -1,3 +1,19 @@
+function hold(t){
+    if(this._status.hold==undefined){
+        if(this._status.current==undefined)
+            return
+        this._status.hold=this._status.current.type
+        this._getCurrent(t)
+    }else if(this._status.current==undefined){
+        this._setCurrent(t,this._status.hold)
+        this._status.hold=undefined
+    }else{
+        let temp=this._status.hold
+        this._status.hold=this._status.current.type
+        this._setCurrent(t,temp)
+    }
+    this._set.hold=1
+}
 export default function(event){
     this._to(event[0])
     switch(event[1]){
@@ -13,7 +29,7 @@ export default function(event){
                 case'c':
                     if(this._status.lineClear)
                         break
-                    this._hold(event[0])
+                    hold.call(this,event[0])
                 break
                 case'Z':
                 case'z':

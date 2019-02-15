@@ -43,22 +43,6 @@ Game.prototype._getCurrent=function(t){
     delete this._status.next
     this.god.getNext(this._status.godChoice)
 }
-Game.prototype._hold=function(t){
-    if(this._status.hold==undefined){
-        if(this._status.current==undefined)
-            return
-        this._status.hold=this._status.current.type
-        this._getCurrent(t)
-    }else if(this._status.current==undefined){
-        this._setCurrent(t,this._status.hold)
-        this._status.hold=undefined
-    }else{
-        let temp=this._status.hold
-        this._status.hold=this._status.current.type
-        this._setCurrent(t,temp)
-    }
-    this._set.hold=1
-}
 Game.prototype._isValidTransfer=function(dx,dy,dd){
     return isValidTransfer(
         this._status.current,this._board.array,dx,dy,dd
