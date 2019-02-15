@@ -164,7 +164,7 @@ srsWallKick[2]=srsWallKick[4]=srsWallKick[5]=srsWallKick[6]=srsWallKick[1];
 var constant = {
     shape,
     srsWallKick,
-}
+};
 
 function isValidTransfer(current,board,dx,dy,dd){
     let
@@ -276,6 +276,22 @@ function _to(t){
     }
 }
 
+function hold(t){
+    if(this._status.hold==undefined){
+        if(this._status.current==undefined)
+            return
+        this._status.hold=this._status.current.type;
+        this._getCurrent(t);
+    }else if(this._status.current==undefined){
+        this._setCurrent(t,this._status.hold);
+        this._status.hold=undefined;
+    }else{
+        let temp=this._status.hold;
+        this._status.hold=this._status.current.type;
+        this._setCurrent(t,temp);
+    }
+    this._set.hold=1;
+}
 function _processEvent(event){
     this._to(event[0]);
     switch(event[1]){
@@ -291,7 +307,7 @@ function _processEvent(event){
                 case'c':
                     if(this._status.lineClear)
                         break
-                    this._hold(event[0]);
+                    hold.call(this,event[0]);
                 break
                 case'Z':
                 case'z':
@@ -419,22 +435,6 @@ Game.prototype._getCurrent=function(t){
     this._set.next=1;
     delete this._status.next;
     this.god.getNext(this._status.godChoice);
-};
-Game.prototype._hold=function(t){
-    if(this._status.hold==undefined){
-        if(this._status.current==undefined)
-            return
-        this._status.hold=this._status.current.type;
-        this._getCurrent(t);
-    }else if(this._status.current==undefined){
-        this._setCurrent(t,this._status.hold);
-        this._status.hold=undefined;
-    }else{
-        let temp=this._status.hold;
-        this._status.hold=this._status.current.type;
-        this._setCurrent(t,temp);
-    }
-    this._set.hold=1;
 };
 Game.prototype._isValidTransfer=function(dx,dy,dd){
     return isValidTransfer(
@@ -577,7 +577,7 @@ var doe$1 = new Proxy(doe,{
     get:(t,p)=>methods[p]||function(){
         return doe(document.createElement(p),...arguments)
     }
-})
+});
 
 let color=[
     '#00FFFF',  // Aqua
@@ -592,9 +592,13 @@ function Ui(){
     this.node=doe$1.canvas({
         className:'tetris',tabIndex:-1,width:640,height:480,
         onkeydown:e=>{
+            e.preventDefault();
+            e.stopPropagation();
             this.game.in(['keyDown',e.key]);
         },
         onkeyup:e=>{
+            e.preventDefault();
+            e.stopPropagation();
             this.game.in(['keyUp',e.key]);
         },
     });
@@ -655,7 +659,7 @@ Ui.prototype._shadowPosition=function(){
         status.current,status.board,0,delta_y__shadow-1,0
     ))
         delta_y__shadow--;
-    return[
+    return [
         status.current.x,
         status.current.y+delta_y__shadow
     ]
@@ -693,13 +697,8 @@ function processAnimationFrame(){
     let computeStart=performance.now();
     this._game.to(~~computeStart-this._start);
     this._outQueue();
-    if(this._setUi.length){
-        let set={};
-        for(let s of this._setUi)
-            set[s[0]]=s[1];
-        this._setUi=[];
-        this._ui.set(set);
-    }
+    this._ui.set(this._setUi);
+    this._setUi={};
     let computeEnd=performance.now();
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame);
@@ -734,7 +733,7 @@ function Tetris(){
         getNext:choice=>this._queue.push(()=>this._god.getNext(choice)),
     };
     this._game.ui={
-        set:set=>this._setUi.push(set),
+        set:set=>this._setUi[set[0]]=set[1],
     };
     this._god=new God;
     this._god.game={
@@ -746,7 +745,7 @@ function Tetris(){
             this._inGame(event);
         },
     };
-    this._setUi=[];
+    this._setUi={};
     this._installation={};
     this._processAnimationFrame=processAnimationFrame.bind(this);
     this._queue=[];
@@ -773,6 +772,9 @@ Tetris.prototype.install=function(){
 };
 Tetris.prototype.uninstall=function(){
     cancelAnimationFrame(this._installation.animationFrameRequest);
+};
+Tetris.prototype.focus=function(){
+    this._ui.node.focus();
 };
 Tetris.prototype.frameSecond=null;
 
