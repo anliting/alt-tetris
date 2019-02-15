@@ -5,13 +5,8 @@ function processAnimationFrame(){
     let computeStart=performance.now()
     this._game.to(~~computeStart-this._start)
     this._outQueue()
-    if(this._setUi.length){
-        let set={}
-        for(let s of this._setUi)
-            set[s[0]]=s[1]
-        this._setUi=[]
-        this._ui.set(set)
-    }
+    this._ui.set(this._setUi)
+    this._setUi={}
     let computeEnd=performance.now()
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame)
@@ -46,7 +41,7 @@ function Tetris(){
         getNext:choice=>this._queue.push(()=>this._god.getNext(choice)),
     }
     this._game.ui={
-        set:set=>this._setUi.push(set),
+        set:set=>this._setUi[set[0]]=set[1],
     }
     this._god=new God
     this._god.game={
@@ -58,7 +53,7 @@ function Tetris(){
             this._inGame(event)
         },
     }
-    this._setUi=[]
+    this._setUi={}
     this._installation={}
     this._processAnimationFrame=processAnimationFrame.bind(this)
     this._queue=[]
@@ -85,6 +80,9 @@ Tetris.prototype.install=function(){
 }
 Tetris.prototype.uninstall=function(){
     cancelAnimationFrame(this._installation.animationFrameRequest)
+}
+Tetris.prototype.focus=function(){
+    this._ui.node.focus()
 }
 Tetris.prototype.frameSecond=null
 export default Tetris

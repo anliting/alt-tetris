@@ -7,7 +7,7 @@ doe.head(
 let tetris=new Tetris
 tetris.install()
 doe.body(doe.div(doe.div(tetris.ui)))
-tetris.ui.focus()
+tetris.focus()
 // hacker access
 window.tetris=tetris
 tetris.start()

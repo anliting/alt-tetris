@@ -14,9 +14,13 @@ function Ui(){
     this.node=doe.canvas({
         className:'tetris',tabIndex:-1,width:640,height:480,
         onkeydown:e=>{
+            e.preventDefault()
+            e.stopPropagation()
             this.game.in(['keyDown',e.key])
         },
         onkeyup:e=>{
+            e.preventDefault()
+            e.stopPropagation()
             this.game.in(['keyUp',e.key])
         },
     })
