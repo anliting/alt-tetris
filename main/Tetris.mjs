@@ -1,3 +1,4 @@
+import doe from                     '../lib/doe.mjs'
 import Game from                    './Tetris/Game.mjs'
 import God from                     './Tetris/God.mjs'
 import Ui from                      './Tetris/Ui.mjs'
@@ -49,17 +50,20 @@ function Tetris(){
     }
     this._ui=new Ui
     this._ui.game={
-        in:event=>{
-            this._inGame(event)
-        },
+        in:event=>this._inGame(event),
     }
     this._setUi={}
     this._installation={}
     this._processAnimationFrame=processAnimationFrame.bind(this)
     this._queue=[]
-    this.ui=this._ui.node
+    this.ui=doe.div({className:'tetris'},this._ui.node)
 }
-Tetris.style=``
+Tetris.style=`
+    .tetris{
+        width:640px;
+        height:480px;
+    }
+`
 Tetris.prototype._outQueue=function(){
     for(;this._queue.length;)
         this._queue.shift()()

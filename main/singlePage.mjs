@@ -19,6 +19,7 @@ export default`
         line-height:0;
     }
     body>div>*>*{
+        display:inline-block;
         line-height:1;
         outline:none;
     }
