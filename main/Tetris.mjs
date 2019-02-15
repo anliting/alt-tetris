@@ -3,13 +3,13 @@ import SinglePlayer from './Tetris/SinglePlayer.mjs'
 function processAnimationFrame(){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame)
-    if(!this.frameSecond)
-        return this._singlePlayer.processAnimationFrame()
     let computeStart=performance.now()
-    this._singlePlayer.processAnimationFrame()
-    let
-        computeEnd=performance.now(),
-        computeEndPoint=~~computeEnd
+    if(this._status[0]=='game')
+        this._singlePlayer.processAnimationFrame()
+    let computeEnd=performance.now()
+    if(!this.frameSecond)
+        return
+    let computeEndPoint=~~computeEnd
     if(!this._frameSecond)
         this._frameSecond={
             start:      computeEndPoint,
@@ -33,10 +33,24 @@ function processAnimationFrame(){
     this._frameSecond.time+=computeEnd-computeStart
 }
 function Tetris(){
+    this._status=['menu']
     this._singlePlayer=new SinglePlayer
     this._installation={}
     this._processAnimationFrame=processAnimationFrame.bind(this)
-    this.ui=doe.div({className:'tetris'},this._singlePlayer.ui)
+    this._node={}
+    this.ui=doe.div(
+        {className:'tetris'},
+        this._node.startButton=doe.button('Start',{onclick:e=>{
+            e.stopPropagation()
+            this._status=['game']
+            doe(this.ui,
+                1,this._node.startButton,
+                0,this._singlePlayer.ui
+            )
+            this._singlePlayer.start()
+            this._singlePlayer.focus()
+        }})
+    )
 }
 Tetris.style=`
     .tetris{
@@ -45,9 +59,6 @@ Tetris.style=`
     }
 `
 Tetris.prototype._frameSecond=null
-Tetris.prototype.start=function(){
-    this._singlePlayer.start()
-}
 Tetris.prototype.install=function(){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame)
@@ -56,7 +67,10 @@ Tetris.prototype.uninstall=function(){
     cancelAnimationFrame(this._installation.animationFrameRequest)
 }
 Tetris.prototype.focus=function(){
-    this._singlePlayer.ui.focus()
+    if(this._status[0]=='menu')
+        this._node.startButton.focus()
+    if(this._status[0]=='game')
+        this._singlePlayer.ui.focus()
 }
 Tetris.prototype.frameSecond=null
 export default Tetris

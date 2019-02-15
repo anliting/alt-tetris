@@ -73,6 +73,7 @@ var singlePage = `
         line-height:0;
     }
     body>div>*>*{
+        display:inline-block;
         line-height:1;
         outline:none;
     }
@@ -719,15 +720,56 @@ Ui.prototype.set=function(set){
     }
 };
 
-function processAnimationFrame(){
-    let computeStart=performance.now();
-    this._game.to(~~computeStart-this._start);
+function SinglePlayer(){
+    this._game=new Game;
+    this._game.god={
+        getNext:choice=>this._queue.push(()=>this._god.getNext(choice)),
+    };
+    this._game.ui={
+        set:set=>this._setUi[set[0]]=set[1],
+    };
+    this._god=new God;
+    this._god.game={
+        setNext:next=>this._queue.push(()=>this._inGame(['setNext',next])),
+    };
+    this._ui=new Ui;
+    this._ui.game={
+        in:event=>this._inGame(event),
+    };
+    this._setUi={};
+    this._queue=[];
+    this.ui=this._ui.node;
+}
+SinglePlayer.prototype._outQueue=function(){
+    for(;this._queue.length;)
+        this._queue.shift()();
+};
+SinglePlayer.prototype._inGame=function(a){
+    this._game.in([~~performance.now()-this._start,...a]);
+    this._outQueue();
+};
+SinglePlayer.prototype.start=function(){
+    this._start=~~performance.now();
+    this._god.getNext(this._game.status.godChoice);
+    this._outQueue();
+};
+SinglePlayer.prototype.focus=function(){
+    this._ui.node.focus();
+};
+SinglePlayer.prototype.processAnimationFrame=function(){
+    this._game.to(~~performance.now()-this._start);
     this._outQueue();
     this._ui.set(this._setUi);
     this._setUi={};
-    let computeEnd=performance.now();
+};
+
+function processAnimationFrame(){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame);
+    let computeStart=performance.now();
+    if(this._status[0]=='game')
+        this._singlePlayer.processAnimationFrame();
+    let computeEnd=performance.now();
     if(!this.frameSecond)
         return
     let computeEndPoint=~~computeEnd;
@@ -754,44 +796,32 @@ function processAnimationFrame(){
     this._frameSecond.time+=computeEnd-computeStart;
 }
 function Tetris(){
-    this._game=new Game;
-    this._game.god={
-        getNext:choice=>this._queue.push(()=>this._god.getNext(choice)),
-    };
-    this._game.ui={
-        set:set=>this._setUi[set[0]]=set[1],
-    };
-    this._god=new God;
-    this._god.game={
-        setNext:next=>this._queue.push(()=>this._inGame(['setNext',next])),
-    };
-    this._ui=new Ui;
-    this._ui.game={
-        in:event=>{
-            this._inGame(event);
-        },
-    };
-    this._setUi={};
+    this._status=['menu'];
+    this._singlePlayer=new SinglePlayer;
     this._installation={};
     this._processAnimationFrame=processAnimationFrame.bind(this);
-    this._queue=[];
-    this.ui=this._ui.node;
+    this._node={};
+    this.ui=doe$1.div(
+        {className:'tetris'},
+        this._node.startButton=doe$1.button('Start',{onclick:e=>{
+            e.stopPropagation();
+            this._status=['game'];
+            doe$1(this.ui,
+                1,this._node.startButton,
+                0,this._singlePlayer.ui
+            );
+            this._singlePlayer.start();
+            this._singlePlayer.focus();
+        }})
+    );
 }
-Tetris.style=``;
-Tetris.prototype._outQueue=function(){
-    for(;this._queue.length;)
-        this._queue.shift()();
-};
-Tetris.prototype._inGame=function(a){
-    this._game.in([~~performance.now()-this._start,...a]);
-    this._outQueue();
-};
+Tetris.style=`
+    .tetris{
+        width:640px;
+        height:480px;
+    }
+`;
 Tetris.prototype._frameSecond=null;
-Tetris.prototype.start=function(){
-    this._start=~~performance.now();
-    this._god.getNext(this._game.status.godChoice);
-    this._outQueue();
-};
 Tetris.prototype.install=function(){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame);
@@ -800,7 +830,10 @@ Tetris.prototype.uninstall=function(){
     cancelAnimationFrame(this._installation.animationFrameRequest);
 };
 Tetris.prototype.focus=function(){
-    this._ui.node.focus();
+    if(this._status[0]=='menu')
+        this._node.startButton.focus();
+    if(this._status[0]=='game')
+        this._singlePlayer.ui.focus();
 };
 Tetris.prototype.frameSecond=null;
 
@@ -811,4 +844,3 @@ let tetris=new Tetris;
 tetris.install();
 doe$1.body(doe$1.div(doe$1.div(tetris.ui)));
 tetris.focus();
-tetris.start();

@@ -10,4 +10,3 @@ doe.body(doe.div(doe.div(tetris.ui)))
 tetris.focus()
 // hacker access
 window.tetris=tetris
-tetris.start()

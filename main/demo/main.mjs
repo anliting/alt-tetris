@@ -8,4 +8,3 @@ let tetris=new Tetris
 tetris.install()
 doe.body(doe.div(doe.div(tetris.ui)))
 tetris.focus()
-tetris.start()
