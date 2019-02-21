@@ -1,5 +1,5 @@
-import doe from '../lib/doe.mjs'
-import SinglePlayer from './Tetris/SinglePlayer.mjs'
+import doe from             '../lib/doe.mjs'
+import SinglePlayer from    './Tetris/SinglePlayer.mjs'
 function processAnimationFrame(){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame)
@@ -40,22 +40,41 @@ function Tetris(){
     this._node={}
     this.ui=doe.div(
         {className:'tetris'},
-        this._node.startButton=doe.button('Start',{onclick:e=>{
-            e.stopPropagation()
-            this._status=['game']
-            doe(this.ui,
-                1,this._node.startButton,
-                0,this._singlePlayer.ui
+        this._node.menu=doe.div(
+            {className:'menu'},
+            doe.div(
+                this._node.startButton=doe.button('Start',{onclick:e=>{
+                    e.stopPropagation()
+                    this._status=['game']
+                    doe(this.ui,
+                        1,this._node.menu,
+                        0,this._singlePlayer.ui
+                    )
+                    this._singlePlayer.start()
+                    this._singlePlayer.focus()
+                }})
             )
-            this._singlePlayer.start()
-            this._singlePlayer.focus()
-        }})
+        )
     )
 }
 Tetris.style=`
     .tetris{
         width:640px;
         height:480px;
+        background-color:#888;
+    }
+    .tetris>.menu{
+        display:table;
+        width:100%;
+        height:100%;
+    }
+    .tetris>.menu>*{
+        display:table-cell;
+        vertical-align:middle;
+        text-align:center;
+    }
+    .tetris>.ui{
+        outline:none;
     }
 `
 Tetris.prototype._frameSecond=null

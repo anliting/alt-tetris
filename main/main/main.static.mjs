@@ -59,7 +59,7 @@ var singlePage = `
     body{
         height:100%;
         margin:0;
-        background-color:black;
+        background-color:#444;
     }
     body>div{
         display:table;
@@ -75,7 +75,6 @@ var singlePage = `
     body>div>*>*{
         display:inline-block;
         line-height:1;
-        outline:none;
     }
 `;
 
@@ -606,18 +605,24 @@ God.prototype.getNext=function(choice){
             this.game.setNext(i);
 };
 
-let color=[
-    '#00FFFF',  // Aqua
-    '#0000FF',  // Standard Blue
-    '#FFA500',  // Standard Orange
-    '#FFFF00',  // Standard Yellow
-    '#00FF00',  // Standard Lime
-    '#800080',  // Standard Purple
-    '#FF0000',  // Standard Red
-];
+let 
+    color=[
+        '#00FFFF',  // Aqua
+        '#0000FF',  // Standard Blue
+        '#FFA500',  // Standard Orange
+        '#FFFF00',  // Standard Yellow
+        '#00FF00',  // Standard Lime
+        '#800080',  // Standard Purple
+        '#FF0000',  // Standard Red
+    ],
+    backgroundColor='#888',
+    width=640;
 function Ui(){
     this.node=doe$1.canvas({
-        className:'tetris',tabIndex:-1,width:640,height:480,
+        className:'ui',
+        tabIndex:-1,
+        width:640,
+        height:480,
         onkeydown:e=>{
             e.preventDefault();
             e.stopPropagation();
@@ -628,11 +633,15 @@ function Ui(){
             e.stopPropagation();
             this.game.in(['keyUp',e.key]);
         },
+        oncontextmenu:e=>{
+            e.preventDefault();
+            e.stopPropagation();
+        },
     });
     this._uiCache={
         context:this.node.getContext('2d',{alpha:false})
     };
-    this._uiCache.context.fillStyle='darkgray';
+    this._uiCache.context.fillStyle=backgroundColor;
     this._uiCache.context.fillRect(0,0,640,480);
     this._status={
         board:[...Array(10)].map(()=>({}))
@@ -659,7 +668,7 @@ Ui.prototype._drawBoardAt=function(atX,atY){
             atY+17*(20-(p[1]+constant.shape[c.type][0].length)),
             c.type,
             c.direction,
-            'gray'
+            '#444'
         );
         this._drawTetrominoAt(
             atX+17*status.current.x,
@@ -700,23 +709,23 @@ Ui.prototype.set=function(set){
         'board' in set||
         'current' in set
     ){
-        this._uiCache.context.fillStyle='darkgray';
-        this._uiCache.context.fillRect(160,12,169,407);
-        this._drawBoardAt(160,80);
+        this._uiCache.context.fillStyle=backgroundColor;
+        this._uiCache.context.fillRect(width/2-84,12,169,407);
+        this._drawBoardAt(width/2-84,80);
     }
     if('next' in set){
         this._status.next=set.next;
-        this._uiCache.context.fillStyle='darkgray';
-        this._uiCache.context.fillRect(400,80,67,67);
+        this._uiCache.context.fillStyle=backgroundColor;
+        this._uiCache.context.fillRect(width-120-67,80,67,67);
         if(this._status.next!=undefined)
-            this._drawTetrominoAt(400,80,this._status.next);
+            this._drawTetrominoAt(width-120-67,80,this._status.next);
     }
     if('hold' in set){
         this._status.hold=set.hold;
-        this._uiCache.context.fillStyle='darkgray';
-        this._uiCache.context.fillRect(80,80,67,67);
+        this._uiCache.context.fillStyle=backgroundColor;
+        this._uiCache.context.fillRect(120,80,67,67);
         if(this._status.hold!=undefined)
-            this._drawTetrominoAt(80,80,this._status.hold);
+            this._drawTetrominoAt(120,80,this._status.hold);
     }
 };
 
@@ -803,22 +812,41 @@ function Tetris(){
     this._node={};
     this.ui=doe$1.div(
         {className:'tetris'},
-        this._node.startButton=doe$1.button('Start',{onclick:e=>{
-            e.stopPropagation();
-            this._status=['game'];
-            doe$1(this.ui,
-                1,this._node.startButton,
-                0,this._singlePlayer.ui
-            );
-            this._singlePlayer.start();
-            this._singlePlayer.focus();
-        }})
+        this._node.menu=doe$1.div(
+            {className:'menu'},
+            doe$1.div(
+                this._node.startButton=doe$1.button('Start',{onclick:e=>{
+                    e.stopPropagation();
+                    this._status=['game'];
+                    doe$1(this.ui,
+                        1,this._node.menu,
+                        0,this._singlePlayer.ui
+                    );
+                    this._singlePlayer.start();
+                    this._singlePlayer.focus();
+                }})
+            )
+        )
     );
 }
 Tetris.style=`
     .tetris{
         width:640px;
         height:480px;
+        background-color:#888;
+    }
+    .tetris>.menu{
+        display:table;
+        width:100%;
+        height:100%;
+    }
+    .tetris>.menu>*{
+        display:table-cell;
+        vertical-align:middle;
+        text-align:center;
+    }
+    .tetris>.ui{
+        outline:none;
     }
 `;
 Tetris.prototype._frameSecond=null;

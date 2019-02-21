@@ -5,7 +5,7 @@ export default`
     body{
         height:100%;
         margin:0;
-        background-color:black;
+        background-color:#444;
     }
     body>div{
         display:table;
@@ -21,6 +21,5 @@ export default`
     body>div>*>*{
         display:inline-block;
         line-height:1;
-        outline:none;
     }
 `
