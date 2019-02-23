@@ -50,7 +50,7 @@ var doe$1 = new Proxy(doe,{
     get:(t,p)=>methods[p]||function(){
         return doe(document.createElement(p),...arguments)
     }
-});
+})
 
 let shape=[
     [
@@ -218,7 +218,7 @@ srsWallKick[2]=srsWallKick[4]=srsWallKick[5]=srsWallKick[6]=srsWallKick[1];
 var constant = {
     shape,
     srsWallKick,
-};
+}
 
 function isValidTransfer(current,board,dx,dy,dd){
     let
@@ -580,17 +580,20 @@ God.prototype.getNext=function(choice){
 };
 
 let 
-    color=[
-        '#00FFFF',  // Aqua
-        '#0000FF',  // Standard Blue
-        '#FFA500',  // Standard Orange
-        '#FFFF00',  // Standard Yellow
-        '#00FF00',  // Standard Lime
-        '#800080',  // Standard Purple
-        '#FF0000',  // Standard Red
+    hslColor=[
+        [180,   1, .5],
+        [240,   1, .5],
+        [39,    1, .5],
+        [60,    1, .5],
+        [120,   1, .5],
+        [300,   1, .25],
+        [0,     1, .5],
     ],
     backgroundColor='#888',
     width=640;
+function hslaCss(a){
+    return`hsla(${a[0]},${100*a[1]}%,${100*a[2]}%,${a[3]})`
+}
 function Ui(){
     this.node=doe$1.canvas({
         className:'ui',
@@ -621,18 +624,19 @@ function Ui(){
         board:[...Array(10)].map(()=>({}))
     };
 }
+Ui.prototype._drawBlockAt=function(id,atX,atY,alpha=1){
+    this._uiCache.context.fillStyle=hslaCss([...hslColor[id],alpha]);
+    this._uiCache.context.fillRect(atX,atY,16,16);
+};
 Ui.prototype._drawBoardAt=function(atX,atY){
     let status=this._status;
     for(let x=0;x<10;x++)
-    for(let y=0;y<20;y++){
-        this._uiCache.context.fillStyle=
-            status.board[x][y]==undefined
-        ?
-            'black'
-        :
-            color[status.board[x][y]];
-        this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16);
-    }
+    for(let y=0;y<20;y++)
+        if(status.board[x][y]==undefined){
+            this._uiCache.context.fillStyle='black';
+            this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16);
+        }else
+            this._drawBlockAt(status.board[x][y],atX+17*x,atY+17*(20-1-y));
     if(status.current){
         let
             p=this._shadowPosition(),
@@ -642,7 +646,7 @@ Ui.prototype._drawBoardAt=function(atX,atY){
             atY+17*(20-(p[1]+constant.shape[c.type][0].length)),
             c.type,
             c.direction,
-            '#444'
+            .5
         );
         this._drawTetrominoAt(
             atX+17*status.current.x,
@@ -653,15 +657,14 @@ Ui.prototype._drawBoardAt=function(atX,atY){
     }
 };
 Ui.prototype._drawTetrominoAt=function(atX,atY,id,direction=0){
-    this._drawTetrominoShapeAt(atX,atY,id,direction,color[id]);
+    this._drawTetrominoShapeAt(atX,atY,id,direction);
 };
-Ui.prototype._drawTetrominoShapeAt=function(atX,atY,id,direction,color){
-    this._uiCache.context.fillStyle=color;
+Ui.prototype._drawTetrominoShapeAt=function(atX,atY,id,direction,shadow){
     let
         shape=constant.shape[id][direction],
         n=shape.length;
     for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(shape[r][c])
-        this._uiCache.context.fillRect(atX+17*c,atY+17*r,16,16);
+        this._drawBlockAt(id,atX+17*c,atY+17*r,shadow);
 };
 Ui.prototype._shadowPosition=function(){
     let status=this._status,delta_y__shadow=0;
@@ -669,7 +672,7 @@ Ui.prototype._shadowPosition=function(){
         status.current,status.board,0,delta_y__shadow-1,0
     ))
         delta_y__shadow--;
-    return [
+    return[
         status.current.x,
         status.current.y+delta_y__shadow
     ]

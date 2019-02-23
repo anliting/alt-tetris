@@ -50,12 +50,8 @@ function Ui(){
         board:[...Array(10)].map(()=>({}))
     }
 }
-Ui.prototype._drawBlockAt=function(id,atX,atY,shadow){
-    shadow=shadow?.5:1
-    this._uiCache.context.fillStyle=hslaCss([
-        ...hslColor[id],
-        shadow
-    ])
+Ui.prototype._drawBlockAt=function(id,atX,atY,alpha=1){
+    this._uiCache.context.fillStyle=hslaCss([...hslColor[id],alpha])
     this._uiCache.context.fillRect(atX,atY,16,16)
 }
 Ui.prototype._drawBoardAt=function(atX,atY){
@@ -76,7 +72,7 @@ Ui.prototype._drawBoardAt=function(atX,atY){
             atY+17*(20-(p[1]+constant.shape[c.type][0].length)),
             c.type,
             c.direction,
-            1
+            .5
         )
         this._drawTetrominoAt(
             atX+17*status.current.x,
