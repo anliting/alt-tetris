@@ -44,4 +44,7 @@ SinglePlayer.prototype.processAnimationFrame=function(){
     this._ui.set(this._setUi)
     this._setUi={}
 }
+Object.defineProperty(SinglePlayer.prototype,'image',{set(image){
+    this._ui.image=image
+}})
 export default SinglePlayer

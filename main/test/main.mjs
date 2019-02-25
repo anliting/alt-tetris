@@ -6,7 +6,12 @@ doe.head(
 )
 let tetris=new Tetris
 tetris.install()
-doe.body(doe.div(doe.div(tetris.ui)))
-tetris.focus()
+;(async()=>{
+    tetris.image=await Promise.all([...Array(7)].map((e,i)=>new Promise(rs=>
+        doe.img({src:`Tetris/Ui/${i}.png`,onload(){rs(this)}})
+    )))
+    doe.body(doe.div(doe.div(tetris.ui)))
+    tetris.focus()
+})()
 // hacker access
 window.tetris=tetris

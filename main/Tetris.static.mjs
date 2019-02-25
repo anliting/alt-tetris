@@ -580,20 +580,8 @@ God.prototype.getNext=function(choice){
 };
 
 let 
-    hslColor=[
-        [180,   1, .5],
-        [240,   1, .5],
-        [39,    1, .5],
-        [60,    1, .5],
-        [120,   1, .5],
-        [300,   1, .25],
-        [0,     1, .5],
-    ],
     backgroundColor='#888',
     width=640;
-function hslaCss(a){
-    return`hsla(${a[0]},${100*a[1]}%,${100*a[2]}%,${a[3]})`
-}
 function Ui(){
     this.node=doe$1.canvas({
         className:'ui',
@@ -625,8 +613,12 @@ function Ui(){
     };
 }
 Ui.prototype._drawBlockAt=function(id,atX,atY,alpha=1){
-    this._uiCache.context.fillStyle=hslaCss([...hslColor[id],alpha]);
-    this._uiCache.context.fillRect(atX,atY,16,16);
+    this._uiCache.context.globalAlpha=alpha;
+    this._uiCache.context.drawImage(this._image[id],atX,atY);
+    this._uiCache.context.globalAlpha=1;
+    // approach when there is no this._image
+    /*this._uiCache.context.fillStyle=hslaCss([...hslColor[id],alpha])
+    this._uiCache.context.fillRect(atX,atY,16,16)*/
 };
 Ui.prototype._drawBoardAt=function(atX,atY){
     let status=this._status;
@@ -634,23 +626,23 @@ Ui.prototype._drawBoardAt=function(atX,atY){
     for(let y=0;y<20;y++)
         if(status.board[x][y]==undefined){
             this._uiCache.context.fillStyle='black';
-            this._uiCache.context.fillRect(atX+17*x,atY+17*(20-1-y),16,16);
+            this._uiCache.context.fillRect(atX+16*x,atY+16*(20-1-y),16,16);
         }else
-            this._drawBlockAt(status.board[x][y],atX+17*x,atY+17*(20-1-y));
+            this._drawBlockAt(status.board[x][y],atX+16*x,atY+16*(20-1-y));
     if(status.current){
         let
             p=this._shadowPosition(),
             c=status.current;
         this._drawTetrominoShapeAt(
-            atX+17*p[0],
-            atY+17*(20-(p[1]+constant.shape[c.type][0].length)),
+            atX+16*p[0],
+            atY+16*(20-(p[1]+constant.shape[c.type][0].length)),
             c.type,
             c.direction,
             .5
         );
         this._drawTetrominoAt(
-            atX+17*status.current.x,
-            atY+17*(20-(c.y+constant.shape[c.type][0].length)),
+            atX+16*status.current.x,
+            atY+16*(20-(c.y+constant.shape[c.type][0].length)),
             c.type,
             c.direction
         );
@@ -664,7 +656,7 @@ Ui.prototype._drawTetrominoShapeAt=function(atX,atY,id,direction,shadow){
         shape=constant.shape[id][direction],
         n=shape.length;
     for(var r=0;r<n;r++)for(var c=0;c<n;c++)if(shape[r][c])
-        this._drawBlockAt(id,atX+17*c,atY+17*r,shadow);
+        this._drawBlockAt(id,atX+16*c,atY+16*r,shadow);
 };
 Ui.prototype._shadowPosition=function(){
     let status=this._status,delta_y__shadow=0;
@@ -687,24 +679,27 @@ Ui.prototype.set=function(set){
         'current' in set
     ){
         this._uiCache.context.fillStyle=backgroundColor;
-        this._uiCache.context.fillRect(width/2-84,12,169,407);
-        this._drawBoardAt(width/2-84,80);
+        this._uiCache.context.fillRect(width/2-80,12,160,184);
+        this._drawBoardAt(width/2-80,80);
     }
     if('next' in set){
         this._status.next=set.next;
         this._uiCache.context.fillStyle=backgroundColor;
-        this._uiCache.context.fillRect(width-120-67,80,67,67);
+        this._uiCache.context.fillRect(width-120-64,80,64,64);
         if(this._status.next!=undefined)
-            this._drawTetrominoAt(width-120-67,80,this._status.next);
+            this._drawTetrominoAt(width-120-64,80,this._status.next);
     }
     if('hold' in set){
         this._status.hold=set.hold;
         this._uiCache.context.fillStyle=backgroundColor;
-        this._uiCache.context.fillRect(120,80,67,67);
+        this._uiCache.context.fillRect(120,80,64,64);
         if(this._status.hold!=undefined)
             this._drawTetrominoAt(120,80,this._status.hold);
     }
 };
+Object.defineProperty(Ui.prototype,'image',{set(image){
+    this._image=image;
+}});
 
 function SinglePlayer(){
     this._game=new Game;
@@ -748,6 +743,9 @@ SinglePlayer.prototype.processAnimationFrame=function(){
     this._ui.set(this._setUi);
     this._setUi={};
 };
+Object.defineProperty(SinglePlayer.prototype,'image',{set(image){
+    this._ui.image=image;
+}});
 
 function processAnimationFrame(){
     this._installation.animationFrameRequest=
@@ -841,5 +839,8 @@ Tetris.prototype.focus=function(){
         this._singlePlayer.ui.focus();
 };
 Tetris.prototype.frameSecond=null;
+Object.defineProperty(Tetris.prototype,'image',{set(image){
+    this._singlePlayer.image=image;
+}});
 
 export default Tetris;

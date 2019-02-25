@@ -92,4 +92,7 @@ Tetris.prototype.focus=function(){
         this._singlePlayer.ui.focus()
 }
 Tetris.prototype.frameSecond=null
+Object.defineProperty(Tetris.prototype,'image',{set(image){
+    this._singlePlayer.image=image
+}})
 export default Tetris
