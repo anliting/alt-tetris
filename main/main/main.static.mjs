@@ -50,17 +50,9 @@ var doe$1 = new Proxy(doe,{
     get:(t,p)=>methods[p]||function(){
         return doe(document.createElement(p),...arguments)
     }
-})
+});
 
 var singlePage = `
-    html{
-        height:100%;
-    }
-    body{
-        height:100%;
-        margin:0;
-        background-color:#444;
-    }
     body>div{
         display:table;
         width:100%;
@@ -70,13 +62,12 @@ var singlePage = `
         display:table-cell;
         vertical-align:middle;
         text-align:center;
-        line-height:0;
     }
     body>div>*>*{
         display:inline-block;
-        line-height:1;
+        vertical-align:middle;
     }
-`
+`;
 
 let shape=[
     [
@@ -244,7 +235,7 @@ srsWallKick[2]=srsWallKick[4]=srsWallKick[5]=srsWallKick[6]=srsWallKick[1];
 var constant = {
     shape,
     srsWallKick,
-}
+};
 
 function isValidTransfer(current,board,dx,dy,dd){
     let
@@ -690,7 +681,7 @@ Ui.prototype._shadowPosition=function(){
         status.current,status.board,0,delta_y__shadow-1,0
     ))
         delta_y__shadow--;
-    return[
+    return [
         status.current.x,
         status.current.y+delta_y__shadow
     ]

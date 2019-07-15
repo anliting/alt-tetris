@@ -1,4 +1,4 @@
-import doe from                     '../../lib/doe.mjs'
+import doe from                     '../../lib/doe/main/doe.mjs'
 import Game from                    './Game.mjs'
 import God from                     './God.mjs'
 import Ui from                      './Ui.mjs'

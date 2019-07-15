@@ -1,4 +1,4 @@
-import doe from             '../lib/doe.mjs'
+import doe from             '../lib/doe/main/doe.mjs'
 import SinglePlayer from    './Tetris/SinglePlayer.mjs'
 function processAnimationFrame(){
     this._installation.animationFrameRequest=

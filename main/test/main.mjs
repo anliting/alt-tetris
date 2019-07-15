@@ -1,4 +1,4 @@
-import doe from         '../../lib/doe.mjs'
+import doe from         '../../lib/doe/main/doe.mjs'
 import singlePage from  '../singlePage.mjs'
 import Tetris from      '../Tetris.mjs'
 doe.head(
