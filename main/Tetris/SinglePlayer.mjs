@@ -30,16 +30,16 @@ SinglePlayer.prototype._inGame=function(a){
     this._game.in([~~performance.now()-this._start,...a])
     this._outQueue()
 }
-SinglePlayer.prototype.start=function(){
-    this._start=~~performance.now()
+SinglePlayer.prototype.start=function(t){
+    this._start=t
     this._god.getNext(this._game.status.godChoice)
     this._outQueue()
 }
 SinglePlayer.prototype.focus=function(){
     this._ui.node.focus()
 }
-SinglePlayer.prototype.processAnimationFrame=function(){
-    this._game.to(~~performance.now()-this._start)
+SinglePlayer.prototype.processAnimationFrame=function(t){
+    this._game.to(t-this._start)
     this._outQueue()
     this._ui.set(this._setUi)
     this._setUi={}
