@@ -505,7 +505,7 @@ Game.prototype._getCurrent=function(t){
     this._setCurrent(t,this._status.next);
     this._set.next=1;
     delete this._status.next;
-    this.god.getNext(this._status.godChoice);
+    this.god.getNext(t,this._status.godChoice);
 };
 Game.prototype._isValidTransfer=function(dx,dy,dd){
     return isValidTransfer(
@@ -546,7 +546,7 @@ Game.prototype._setNext=function(t,next){
     if(this._status.godChoice.reduce((a,b)=>a+b)==7)
         this._status.godChoice=[0,0,0,0,0,0,0];
     if(this._status.next==undefined)
-        this.god.getNext(this._status.godChoice);
+        this.god.getNext(t,this._status.godChoice);
 };
 Game.prototype._transfer=function(t,dx,dy,dd){
     this._set.current=1;
@@ -587,13 +587,13 @@ Object.defineProperty(Game.prototype,'status',{get(){
 
 function God(){
 }
-God.prototype.getNext=function(choice){
+God.prototype.getNext=function(t,choice){
     let a=~~(Math.random()*(7-choice.reduce((a,b)=>a+b)));
     for(let i=0;i<7;i++)
         if(choice[i])
             a++;
         else if(i==a)
-            this.game.setNext(i);
+            this.game.setNext(t,i);
 };
 
 let 
@@ -608,12 +608,12 @@ function Ui(){
         onkeydown:e=>{
             e.preventDefault();
             e.stopPropagation();
-            this.game.in(['keyDown',e.key]);
+            this.game.in(~~e.timeStamp,['keyDown',e.key]);
         },
         onkeyup:e=>{
             e.preventDefault();
             e.stopPropagation();
-            this.game.in(['keyUp',e.key]);
+            this.game.in(~~e.timeStamp,['keyUp',e.key]);
         },
         oncontextmenu:e=>{
             e.preventDefault();
@@ -721,18 +721,20 @@ Object.defineProperty(Ui.prototype,'image',{set(image){
 function SinglePlayer(){
     this._game=new Game;
     this._game.god={
-        getNext:choice=>this._queue.push(()=>this._god.getNext(choice)),
+        getNext:(t,choice)=>
+            this._queue.push(()=>this._god.getNext(t,choice)),
     };
     this._game.ui={
         set:set=>this._setUi[set[0]]=set[1],
     };
     this._god=new God;
     this._god.game={
-        setNext:next=>this._queue.push(()=>this._inGame(['setNext',next])),
+        setNext:(t,next)=>
+            this._queue.push(()=>this._inGame(t,['setNext',next])),
     };
     this._ui=new Ui;
     this._ui.game={
-        in:event=>this._inGame(event),
+        in:(t,event)=>this._inGame(t,event),
     };
     this._setUi={};
     this._queue=[];
@@ -742,20 +744,20 @@ SinglePlayer.prototype._outQueue=function(){
     for(;this._queue.length;)
         this._queue.shift()();
 };
-SinglePlayer.prototype._inGame=function(a){
-    this._game.in([~~performance.now()-this._start,...a]);
+SinglePlayer.prototype._inGame=function(t,a){
+    this._game.in([t,...a]);
     this._outQueue();
 };
-SinglePlayer.prototype.start=function(){
-    this._start=~~performance.now();
-    this._god.getNext(this._game.status.godChoice);
+SinglePlayer.prototype.start=function(t){
+    this._start=t;
+    this._god.getNext(0,this._game.status.godChoice);
     this._outQueue();
 };
 SinglePlayer.prototype.focus=function(){
     this._ui.node.focus();
 };
-SinglePlayer.prototype.processAnimationFrame=function(){
-    this._game.to(~~performance.now()-this._start);
+SinglePlayer.prototype.processAnimationFrame=function(t){
+    this._game.to(t-this._start);
     this._outQueue();
     this._ui.set(this._setUi);
     this._setUi={};
@@ -764,12 +766,12 @@ Object.defineProperty(SinglePlayer.prototype,'image',{set(image){
     this._ui.image=image;
 }});
 
-function processAnimationFrame(){
+function processAnimationFrame(t){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame);
     let computeStart=performance.now();
     if(this._status[0]=='game')
-        this._singlePlayer.processAnimationFrame();
+        this._singlePlayer.processAnimationFrame(~~t);
     let computeEnd=performance.now();
     if(!this.frameSecond)
         return
@@ -814,7 +816,7 @@ function Tetris(){
                         1,this._node.menu,
                         0,this._singlePlayer.ui
                     );
-                    this._singlePlayer.start();
+                    this._singlePlayer.start(~~e.timeStamp);
                     this._singlePlayer.focus();
                 }})
             )

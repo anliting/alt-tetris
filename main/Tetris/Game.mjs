@@ -41,7 +41,7 @@ Game.prototype._getCurrent=function(t){
     this._setCurrent(t,this._status.next)
     this._set.next=1
     delete this._status.next
-    this.god.getNext(this._status.godChoice)
+    this.god.getNext(t,this._status.godChoice)
 }
 Game.prototype._isValidTransfer=function(dx,dy,dd){
     return isValidTransfer(
@@ -82,7 +82,7 @@ Game.prototype._setNext=function(t,next){
     if(this._status.godChoice.reduce((a,b)=>a+b)==7)
         this._status.godChoice=[0,0,0,0,0,0,0]
     if(this._status.next==undefined)
-        this.god.getNext(this._status.godChoice)
+        this.god.getNext(t,this._status.godChoice)
 }
 Game.prototype._transfer=function(t,dx,dy,dd){
     this._set.current=1
