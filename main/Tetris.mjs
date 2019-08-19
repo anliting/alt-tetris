@@ -1,11 +1,11 @@
 import doe from             '../lib/doe/main/doe.mjs'
 import SinglePlayer from    './Tetris/SinglePlayer.mjs'
-function processAnimationFrame(t){
+function processAnimationFrame(){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame)
     let computeStart=performance.now()
     if(this._status[0]=='game')
-        this._singlePlayer.processAnimationFrame(~~t)
+        this._singlePlayer.processAnimationFrame()
     let computeEnd=performance.now()
     if(!this.frameSecond)
         return
@@ -50,7 +50,7 @@ function Tetris(){
                         1,this._node.menu,
                         0,this._singlePlayer.ui
                     )
-                    this._singlePlayer.start(~~e.timeStamp)
+                    this._singlePlayer.start()
                     this._singlePlayer.focus()
                 }})
             )

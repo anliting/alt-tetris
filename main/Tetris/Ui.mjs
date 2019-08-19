@@ -29,12 +29,12 @@ function Ui(){
         onkeydown:e=>{
             e.preventDefault()
             e.stopPropagation()
-            this.game.in(~~e.timeStamp,['keyDown',e.key])
+            this.game.in(['keyDown',e.key])
         },
         onkeyup:e=>{
             e.preventDefault()
             e.stopPropagation()
-            this.game.in(~~e.timeStamp,['keyUp',e.key])
+            this.game.in(['keyUp',e.key])
         },
         oncontextmenu:e=>{
             e.preventDefault()
