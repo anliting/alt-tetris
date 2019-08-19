@@ -52,23 +52,6 @@ var doe$1 = new Proxy(doe,{
     }
 });
 
-var singlePage = `
-    body>div{
-        display:table;
-        width:100%;
-        height:100%;
-    }
-    body>div>*{
-        display:table-cell;
-        vertical-align:middle;
-        text-align:center;
-    }
-    body>div>*>*{
-        display:inline-block;
-        vertical-align:middle;
-    }
-`;
-
 let shape=[
     [
         [
@@ -866,7 +849,23 @@ Object.defineProperty(Tetris.prototype,'image',{set(image){
 }});
 
 doe$1.head(
-    doe$1.style(`${singlePage}${Tetris.style}`)
+    doe$1.style(`
+        body>div{
+            display:table;
+            width:100%;
+            height:100%;
+        }
+        body>div>*{
+            display:table-cell;
+            vertical-align:middle;
+            text-align:center;
+        }
+        body>div>*>*{
+            display:inline-block;
+            vertical-align:middle;
+        }
+        ${Tetris.style}
+    `)
 );
 let tetris=new Tetris;
 tetris.install()
@@ -877,3 +876,5 @@ tetris.install()
     doe$1.body(doe$1.div(doe$1.div(tetris.ui)));
     tetris.focus();
 })();
+
+export default tetris;

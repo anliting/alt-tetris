@@ -12,4 +12,8 @@ body{
 }
 </style>
 <body>
-<script type=module src=test/main.mjs></script>
+<script type=module>
+import singlePage from './singlePage.mjs'
+// hacker access
+window.tetris=singlePage
+</script>
