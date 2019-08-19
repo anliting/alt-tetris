@@ -608,12 +608,12 @@ function Ui(){
         onkeydown:e=>{
             e.preventDefault();
             e.stopPropagation();
-            this.game.in(['keyDown',e.key]);
+            this.game.in(~~e.timeStamp,['keyDown',e.key]);
         },
         onkeyup:e=>{
             e.preventDefault();
             e.stopPropagation();
-            this.game.in(['keyUp',e.key]);
+            this.game.in(~~e.timeStamp,['keyUp',e.key]);
         },
         oncontextmenu:e=>{
             e.preventDefault();
@@ -732,7 +732,10 @@ function SinglePlayer(){
     };
     this._ui=new Ui;
     this._ui.game={
-        in:event=>this._inGame(event),
+        in:(t,event)=>{
+            this._now=t-this._start;
+            this._inGame(event);
+        },
     };
     this._setUi={};
     this._queue=[];
@@ -743,19 +746,21 @@ SinglePlayer.prototype._outQueue=function(){
         this._queue.shift()();
 };
 SinglePlayer.prototype._inGame=function(a){
-    this._game.in([~~performance.now()-this._start,...a]);
+    this._game.in([this._now,...a]);
     this._outQueue();
 };
-SinglePlayer.prototype.start=function(){
-    this._start=~~performance.now();
+SinglePlayer.prototype.start=function(t){
+    this._start=t;
+    this._now=0;
     this._god.getNext(this._game.status.godChoice);
     this._outQueue();
 };
 SinglePlayer.prototype.focus=function(){
     this._ui.node.focus();
 };
-SinglePlayer.prototype.processAnimationFrame=function(){
-    this._game.to(~~performance.now()-this._start);
+SinglePlayer.prototype.processAnimationFrame=function(t){
+    this._now=t-this._start;
+    this._game.to(this._now);
     this._outQueue();
     this._ui.set(this._setUi);
     this._setUi={};
@@ -764,12 +769,12 @@ Object.defineProperty(SinglePlayer.prototype,'image',{set(image){
     this._ui.image=image;
 }});
 
-function processAnimationFrame(){
+function processAnimationFrame(t){
     this._installation.animationFrameRequest=
         requestAnimationFrame(this._processAnimationFrame);
     let computeStart=performance.now();
     if(this._status[0]=='game')
-        this._singlePlayer.processAnimationFrame();
+        this._singlePlayer.processAnimationFrame(~~t);
     let computeEnd=performance.now();
     if(!this.frameSecond)
         return
@@ -814,7 +819,7 @@ function Tetris(){
                         1,this._node.menu,
                         0,this._singlePlayer.ui
                     );
-                    this._singlePlayer.start();
+                    this._singlePlayer.start(~~e.timeStamp);
                     this._singlePlayer.focus();
                 }})
             )
