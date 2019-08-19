@@ -16,7 +16,10 @@ function SinglePlayer(){
     }
     this._ui=new Ui
     this._ui.game={
-        in:event=>this._inGame(event),
+        in:(t,event)=>{
+            this._now=t-this._start
+            this._inGame(event)
+        },
     }
     this._setUi={}
     this._queue=[]
@@ -27,11 +30,12 @@ SinglePlayer.prototype._outQueue=function(){
         this._queue.shift()()
 }
 SinglePlayer.prototype._inGame=function(a){
-    this._game.in([~~performance.now()-this._start,...a])
+    this._game.in([this._now,...a])
     this._outQueue()
 }
 SinglePlayer.prototype.start=function(t){
     this._start=t
+    this._now=0
     this._god.getNext(this._game.status.godChoice)
     this._outQueue()
 }
@@ -39,7 +43,8 @@ SinglePlayer.prototype.focus=function(){
     this._ui.node.focus()
 }
 SinglePlayer.prototype.processAnimationFrame=function(t){
-    this._game.to(t-this._start)
+    this._now=t-this._start
+    this._game.to(this._now)
     this._outQueue()
     this._ui.set(this._setUi)
     this._setUi={}
